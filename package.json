@@ -4,7 +4,6 @@
   "dependencies": {
     "cac": "^6.5.3",
     "chalk": "^3.0.0",
-    "commitizen": "^4.0.3",
     "envinfo": "^7.4.0",
     "sao": "^1.7.0",
     "semantic-release": "^15.13.31",
@@ -16,8 +15,6 @@
     "test": "exit 0",
     "travis-deploy-once": "travis-deploy-once",
     "semantic-release": "semantic-release",
-    "semantic-release-cli": "semantic-release-cli",
-    "commitizen": "commitizen",
     "cz": "git-cz"
   },
   "repository": {
@@ -46,7 +43,6 @@
   ],
   "devDependencies": {
     "cz-conventional-changelog": "^3.0.2",
-    "semantic-release-cli": "^5.2.3",
     "semantic-release": "^15.13.31"
   },
   "config": {
