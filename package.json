@@ -1,0 +1,56 @@
+{
+  "name": "@epranka/create-tsx-package",
+  "version": "0.0.0-semantically-released",
+  "dependencies": {
+    "cac": "^6.5.3",
+    "chalk": "^3.0.0",
+    "commitizen": "^4.0.3",
+    "envinfo": "^7.4.0",
+    "sao": "^1.7.0",
+    "semantic-release": "^15.13.31",
+    "superb": "^4.0.0",
+    "validate-npm-package-name": "^3.0.0"
+  },
+  "bin": "./cli.js",
+  "scripts": {
+    "travis-deploy-once": "travis-deploy-once",
+    "semantic-release": "semantic-release",
+    "semantic-release-cli": "semantic-release-cli",
+    "commitizen": "commitizen",
+    "cz": "git-cz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/epranka/create-tsx-package.git"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "npm",
+    "package",
+    "kodmina",
+    "edvinas",
+    "pranka",
+    "epranka",
+    "starter",
+    "kit",
+    "runner"
+  ],
+  "author": "Edvinas Pranka, Kodmina, https://www.kodmina.lt",
+  "contributors": [
+    {
+      "name": "Edvinas Pranka",
+      "email": "epranka@gmail.com"
+    }
+  ],
+  "devDependencies": {
+    "cz-conventional-changelog": "^3.0.2",
+    "semantic-release-cli": "^5.2.3",
+    "semantic-release": "^15.13.31"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}

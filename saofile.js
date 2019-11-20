@@ -1,0 +1,145 @@
+const { join, relative } = require("path");
+const glob = require("glob");
+const spawn = require("cross-spawn");
+const validate = require("validate-npm-package-name");
+
+const rootDir = __dirname;
+
+module.exports = {
+  prompts: require("./prompts"),
+  templateData() {
+    const scripts = [
+      '\t\t"build": "rm -rf ./dist/** && tsc"',
+      '\t\t"watch": "tsc -- --watch"'
+    ];
+    if (this.answers.tests) {
+      scripts.push('\t\t"test": "jest && npm run build"');
+    }
+    if (this.answers.semanticrelease) {
+      scripts.push('\t\t"semantic-release": "semantic-release"');
+    }
+
+    const devDependencies = [
+      '\t\t"@babel/cli": "^7.2.3"',
+      '\t\t"@babel/core": "^7.3.4"',
+      '\t\t"@babel/plugin-proposal-class-properties": "^7.3.4"',
+      '\t\t"@babel/plugin-proposal-decorators": "^7.4.4"',
+      '\t\t"@babel/plugin-proposal-object-rest-spread": "^7.3.4"',
+      '\t\t"@babel/plugin-transform-typescript": "^7.3.2"',
+      '\t\t"@babel/preset-env": "^7.3.4"',
+      '\t\t"@babel/preset-typescript": "^7.3.3"',
+      '\t\t"@types/hoist-non-react-statics": "^3.3.1"',
+      '\t\t"@types/react": "^16.8.5"',
+      '\t\t"@types/react-dom": "^16.8.2"',
+      '\t\t"cz-conventional-changelog": "3.0.2"',
+      '\t\t"lodash": "^4.17.15"',
+      '\t\t"tslint": "^5.13.0"',
+      '\t\t"tslint-config-prettier": "^1.18.0"',
+      '\t\t"tslint-react": "^3.6.0"',
+      '\t\t"typescript": "^3.3.3333"'
+    ];
+
+    if (this.answers.tests) {
+      devDependencies.push(
+        '\t\t"@types/enzyme": "^3.10.3"',
+        '\t\t"@types/jest": "^24.0.9"',
+        '\t\t"@types/enzyme-adapter-react-16": "^1.0.5"',
+        '\t\t"react-test-renderer": "^16.8.6"',
+        '\t\t"jest": "^24.1.0"',
+        '\t\t"enzyme": "^3.10.0"',
+        '\t\t"enzyme-adapter-react-16": "^1.10.0"',
+        '\t\t"ts-jest": "^24.0.0"'
+      );
+    }
+
+    if (this.answers.semanticrelease) {
+      if (!this.answers.repository || !this.answers.repository.trim()) {
+        console.error(
+          this
+            .chalk`{red No repository url defined while semantic release is enabled}`
+        );
+        process.exit(1);
+      }
+      devDependencies.push('\t\t"semantic-release": "^15.13.31"');
+    }
+
+    const pmRun = this.answers.pm === "yarn" ? "yarn" : "npm run";
+
+    return {
+      scripts: scripts.join(",\n"),
+      devDependencies: devDependencies.join(",\n"),
+      pmRun
+    };
+  },
+  actions() {
+    const validation = validate(this.answers.name);
+    validation.warnings &&
+      validation.warnings.forEach(warn => {
+        console.warn("Warning:", warn);
+      });
+    validation.errors &&
+      validation.errors.forEach(err => {
+        console.error("Error:", err);
+      });
+    validation.errors && validation.errors.length && process.exit(1);
+
+    const actions = [
+      {
+        type: "add",
+        files: "**",
+        templateDir: "templates",
+        filters: {
+          "__tests__/**": "tests",
+          "jest.config.js": "tests",
+          "travis.yml": "semanticrelease",
+          releaserc: "semanticrelease",
+          "_yarn.lock": 'pm=="yarn"',
+          "_package-lock_json": 'pm=="npm"'
+        }
+      }
+    ];
+
+    actions.push({
+      type: "move",
+      patterns: {
+        gitignore: ".gitignore",
+        babelrc: ".babelrc",
+        "travis.yml": ".travis.yml",
+        releaserc: ".release.rc",
+        _package_json: "package.json",
+        _tsconfig_json: "tsconfig.json",
+        _tslint_json: "tslint.json",
+        "_yarn.lock": "yarn.lock",
+        "_package-lock_json": "package-lock.json"
+      }
+    });
+
+    return actions;
+  },
+  async completed() {
+    this.gitInit();
+    await this.npmInstall({ npmClient: this.answers.pm });
+    if (this.answers.semanticrelease) {
+      let options = ["add", "semantic-release-cli"];
+      if (this.answers.pm === "npm") {
+        options[0] = "install";
+      }
+      spawn.sync(this.answers.pm, options, {
+        cwd: this.outDir,
+        stdio: "inherit"
+      });
+      spawn.sync("./node_modules/.bin/semantic-release-cli", ["setup"], {
+        cwd: this.outDir,
+        stdio: "inherit"
+      });
+      options[0] = "remove";
+      if (this.answers.pm === "npm") {
+        options[0] = "uninstall";
+      }
+      spawn.sync(this.answers.pm, options, {
+        cwd: this.outDir,
+        stdio: "inherit"
+      });
+    }
+  }
+};
