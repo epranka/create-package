@@ -14,9 +14,17 @@ module.exports = {
     ];
     if (this.answers.tests) {
       scripts.push('\t\t"test": "jest && npm run build"');
+    } else {
+      scripts.push(
+        '\t\t"test": "echo \\"Warn: No test specified\\" && exit 0"'
+      );
     }
     if (this.answers.semanticrelease) {
-      scripts.push('\t\t"semantic-release": "semantic-release"');
+      scripts.push(
+        '\t\t"semantic-release": "semantic-release"',
+        '\t\t"travis-deploy-once": "travis-deploy-once"',
+        '\t\t"cz": "git-cz"'
+      );
     }
 
     const devDependencies = [
@@ -31,7 +39,6 @@ module.exports = {
       '\t\t"@types/hoist-non-react-statics": "^3.3.1"',
       '\t\t"@types/react": "^16.8.5"',
       '\t\t"@types/react-dom": "^16.8.2"',
-      '\t\t"cz-conventional-changelog": "3.0.2"',
       '\t\t"lodash": "^4.17.15"',
       '\t\t"tslint": "^5.13.0"',
       '\t\t"tslint-config-prettier": "^1.18.0"',
@@ -61,6 +68,7 @@ module.exports = {
         process.exit(1);
       }
       devDependencies.push('\t\t"semantic-release": "^15.13.31"');
+      devDependencies.push('\t\t"commitizen": "^4.0.3"');
     }
 
     const pmRun = this.answers.pm === "yarn" ? "yarn" : "npm run";
@@ -90,11 +98,11 @@ module.exports = {
         templateDir: "templates",
         filters: {
           "__tests__/**": "tests",
-          "jest.config.js": "tests",
-          "travis.yml": "semanticrelease",
+          jest_config_js: "tests",
+          travis_yml: "semanticrelease",
           releaserc: "semanticrelease",
-          "_yarn.lock": 'pm=="yarn"',
-          "_package-lock_json": 'pm=="npm"'
+          _yarn_lock: 'pm=="yarn"',
+          _package_lock_json: 'pm=="npm"'
         }
       }
     ];
@@ -104,13 +112,14 @@ module.exports = {
       patterns: {
         gitignore: ".gitignore",
         babelrc: ".babelrc",
-        "travis.yml": ".travis.yml",
-        releaserc: ".release.rc",
+        travis_yml: ".travis.yml",
+        jest_config_js: "jest.config.js",
+        releaserc: ".releaserc",
         _package_json: "package.json",
         _tsconfig_json: "tsconfig.json",
         _tslint_json: "tslint.json",
-        "_yarn.lock": "yarn.lock",
-        "_package-lock_json": "package-lock.json"
+        _yarn_lock: "yarn.lock",
+        _package_lock_json: "package-lock.json"
       }
     });
 
@@ -120,6 +129,8 @@ module.exports = {
     this.gitInit();
     await this.npmInstall({ npmClient: this.answers.pm });
     if (this.answers.semanticrelease) {
+      // @TODO console log
+      // install semantic release cli
       let options = ["add", "semantic-release-cli"];
       if (this.answers.pm === "npm") {
         options[0] = "install";
@@ -128,10 +139,12 @@ module.exports = {
         cwd: this.outDir,
         stdio: "inherit"
       });
+      // Setup semantic release
       spawn.sync("./node_modules/.bin/semantic-release-cli", ["setup"], {
         cwd: this.outDir,
         stdio: "inherit"
       });
+      // Remove semantic release cli
       options[0] = "remove";
       if (this.answers.pm === "npm") {
         options[0] = "uninstall";
@@ -140,6 +153,15 @@ module.exports = {
         cwd: this.outDir,
         stdio: "inherit"
       });
+      // Setup commitizen
+      spawn.sync(
+        "./node_modules/.bin/commitizen",
+        ["init", "cz-conventional-changelog"],
+        {
+          cwd: this.outDir,
+          stdio: "inherit"
+        }
+      );
     }
   }
 };

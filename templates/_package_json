@@ -23,11 +23,6 @@
     "react": "*",
     "react-dom": "*"
   },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
   "license": "MIT",
   "dependencies": {
     "react": "^16.12.0",
