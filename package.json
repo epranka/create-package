@@ -13,6 +13,7 @@
   "bin": "./cli.js",
   "scripts": {
     "test": "exit 0",
+    "build": "exit 0",
     "travis-deploy-once": "travis-deploy-once",
     "semantic-release": "semantic-release",
     "cz": "git-cz"
