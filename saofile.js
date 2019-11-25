@@ -43,8 +43,14 @@ module.exports = {
       '\t\t"tslint": "^5.13.0"',
       '\t\t"tslint-config-prettier": "^1.18.0"',
       '\t\t"tslint-react": "^3.6.0"',
-      '\t\t"typescript": "^3.3.3333"'
+      '\t\t"typescript": "^3.3.3333"',
+      '\t\t"react": "*"',
+      '\t\t"react-dom": "*"'
     ];
+
+    const peerDependencies = ['\t\t"react": "*"', '\t\t"react-dom": "*"'];
+
+    const dependencies = [];
 
     if (this.answers.tests) {
       devDependencies.push(
@@ -76,6 +82,8 @@ module.exports = {
     return {
       scripts: scripts.join(",\n"),
       devDependencies: devDependencies.join(",\n"),
+      peerDependencies: peerDependencies.join(",\n"),
+      dependencies: dependencies.join(",\n"),
       pmRun
     };
   },
