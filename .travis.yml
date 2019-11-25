@@ -7,19 +7,9 @@ node_js:
 jobs:
   include:
     # Define the release stage that runs semantic-release
-    - stage: test
-      name: "Testing"
-      node_js: lts/*
-      script: yarn test
-    - stage: build
-      name: "Building"
-      node_js: lts/*
-      script: yarn build
     - stage: release
       name: "Releasing"
       node_js: lts/*
-      # Advanced: optionally overwrite your default `script` step to skip the tests
-      script: skip
       deploy:
         provider: script
         cleanup: false
