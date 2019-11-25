@@ -1,9 +1,5 @@
-const { join, relative } = require("path");
-const glob = require("glob");
 const spawn = require("cross-spawn");
 const validate = require("validate-npm-package-name");
-
-const rootDir = __dirname;
 
 module.exports = {
   prompts: require("./prompts"),
@@ -26,9 +22,12 @@ module.exports = {
     if (this.answers.semanticrelease) {
       scripts.push(
         '\t\t"semantic-release": "semantic-release"',
-        '\t\t"travis-deploy-once": "travis-deploy-once"',
         '\t\t"cz": "git-cz"'
       );
+    }
+
+    if (this.answers.travis) {
+      scripts.push('\t\t"travis-deploy-once": "travis-deploy-once"');
     }
 
     const devDependencies = [
@@ -120,7 +119,7 @@ module.exports = {
         filters: {
           "__tests__/**": "tests",
           jest_config_js: "tests",
-          travis_yml: "semanticrelease",
+          travis_yml: "travis",
           releaserc: "semanticrelease"
         }
       }
