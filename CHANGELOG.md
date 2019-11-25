@@ -1,3 +1,10 @@
+## [3.0.2](https://github.com/epranka/create-tsx-package/compare/v3.0.1...v3.0.2) (2019-11-25)
+
+
+### Bug Fixes
+
+* **templates:** added plugins to .releaserc ([9aa5f25](https://github.com/epranka/create-tsx-package/commit/9aa5f254fc81090ef312a98138471fdc2324fa93))
+
 ## [3.0.1](https://github.com/epranka/create-tsx-package/compare/v3.0.0...v3.0.1) (2019-11-25)
 
 
