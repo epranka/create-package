@@ -8,12 +8,16 @@ const rootDir = __dirname;
 module.exports = {
   prompts: require("./prompts"),
   templateData() {
+    const tsconfig = {
+      includes: ['\t\t"./src"']
+    };
     const scripts = [
-      '\t\t"build": "rm -rf ./dist/** && tsc"',
+      '\t\t"build": "rm -rf ./lib/** && tsc"',
       '\t\t"watch": "tsc -- --watch"'
     ];
     if (this.answers.tests) {
-      scripts.push('\t\t"test": "jest && npm run build"');
+      tsconfig.includes.push('\t\t"./__tests__"');
+      scripts.push('\t\t"test": "jest"');
     } else {
       scripts.push(
         '\t\t"test": "echo \\"Warn: No test specified\\" && exit 0"'
@@ -86,6 +90,9 @@ module.exports = {
     const pmRun = this.answers.pm === "yarn" ? "yarn" : "npm run";
 
     return {
+      tsconfig: {
+        includes: tsconfig.includes.join(",\n")
+      },
       scripts: scripts.join(",\n"),
       devDependencies: devDependencies.join(",\n"),
       peerDependencies: peerDependencies.join(",\n"),
@@ -114,9 +121,7 @@ module.exports = {
           "__tests__/**": "tests",
           jest_config_js: "tests",
           travis_yml: "semanticrelease",
-          releaserc: "semanticrelease",
-          _yarn_lock: 'pm=="yarn"',
-          _package_lock_json: 'pm=="npm"'
+          releaserc: "semanticrelease"
         }
       }
     ];
@@ -124,6 +129,8 @@ module.exports = {
     actions.push({
       type: "move",
       patterns: {
+        "src/index_tsx": "src/index.tsx",
+        "__tests__/index_spec_tsx": "__tests__/index.spec.tsx",
         gitignore: ".gitignore",
         babelrc: ".babelrc",
         travis_yml: ".travis.yml",
@@ -131,9 +138,7 @@ module.exports = {
         releaserc: ".releaserc",
         _package_json: "package.json",
         _tsconfig_json: "tsconfig.json",
-        _tslint_json: "tslint.json",
-        _yarn_lock: "yarn.lock",
-        _package_lock_json: "package-lock.json"
+        _tslint_json: "tslint.json"
       }
     });
 
