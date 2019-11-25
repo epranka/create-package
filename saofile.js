@@ -74,6 +74,12 @@ module.exports = {
         process.exit(1);
       }
       devDependencies.push('\t\t"semantic-release": "^15.13.31"');
+      devDependencies.push('\t\t"@semantic-release/changelog": "^3.0.6"');
+      devDependencies.push('\t\t"@semantic-release/commit-analyzer": "^6.3.3"');
+      devDependencies.push('\t\t"@semantic-release/git": "^7.0.18"');
+      devDependencies.push(
+        '\t\t"@semantic-release/release-notes-generator": "^7.3.4"'
+      );
       devDependencies.push('\t\t"commitizen": "^4.0.3"');
     }
 
