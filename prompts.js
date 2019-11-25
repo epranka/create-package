@@ -1,6 +1,12 @@
 const getRepositoryURL = require("./utils/repository");
 const { random } = require("superb");
 
+const args = process.argv;
+const useTravis = !args.includes("--no-travis");
+const useTests = !args.includes("--no-tests");
+const useSemanticRelease = !args.includes("--no-semantic-release");
+const useNPM = args.includes("--npm");
+
 module.exports = [
   {
     name: "name",
@@ -20,31 +26,29 @@ module.exports = [
       { name: "Npm", value: "npm" }
     ],
     type: "list",
-    default: "yarn"
+    default: useNPM ? "npm" : "yarn"
   },
   {
     name: "tests",
     message: "Use unit tests ?",
     type: "confirm",
-    default: true
+    default: useTests
   },
   {
     name: "semanticrelease",
     message: "Use automatic semantic releases ?",
     type: "confirm",
-    default: true
+    default: useSemanticRelease
   },
   {
     name: "travis",
     message: "Use Travis ?",
     type: "confirm",
-    default: true
+    default: useTravis
   },
   {
     name: "repository",
     message: "Respository URL",
-    default: async () => {
-      return await getRepositoryURL();
-    }
+    default: getRepositoryURL()
   }
 ];
