@@ -16,6 +16,10 @@
           {
             "type": "style",
             "release": "patch"
+          },
+          {
+            "type": "improvement",
+            "release": "patch"
           }
         ],
         "parserOpts": {

@@ -1,74 +1,103 @@
 const spawn = require("cross-spawn");
 const validate = require("validate-npm-package-name");
+const serializePackage = require("./utils/serializePackage");
+const serializeTSConfig = require("./utils/serializeTSConfig");
 
 module.exports = {
   prompts: require("./prompts"),
   templateData() {
     const tsconfig = {
-      includes: ['\t\t"./src"']
+      compilerOptions: {
+        outDir: "./lib",
+        target: "esnext",
+        moduleResolution: "node",
+        module: "esnext",
+        jsx: "react",
+        skipLibCheck: true,
+        lib: ["dom", "es6"],
+        experimentalDecorators: true,
+        declaration: true,
+        sourceMap: true,
+        removeComments: true,
+        noImplicitAny: false,
+        noImplicitThis: true,
+        noImplicitReturns: true,
+        noFallthroughCasesInSwitch: true,
+        esModuleInterop: true,
+        allowSyntheticDefaultImports: true
+      },
+      exclude: ["node_modules"],
+      includes: ["./src"]
     };
-    const scripts = [
-      '\t\t"build": "rm -rf ./lib/** && tsc"',
-      '\t\t"watch": "tsc -- --watch"'
-    ];
+    const package = {
+      name: this.answers.name,
+      description: this.answers.description,
+      version: "0.0.1",
+      main: "lib/index.js",
+      module: "lib/index.es.js",
+      types: "lib/index.d.ts",
+      files: ["lib"],
+      publishConfig: { access: "public" },
+      keywords: [],
+      author: "",
+      contributors: [],
+      repository: "",
+      license: "MIT",
+      scripts: [
+        { build: "rm -rf ./lib/** && tsx" },
+        { watch: "tsc -- --watch" }
+      ],
+      dependencies: [],
+      devDependencies: [
+        { "@babel/cli": "^7.2.3" },
+        { "@babel/core": "^7.3.4" },
+        { "@babel/plugin-proposal-class-properties": "^7.3.4" },
+        { "@babel/plugin-proposal-decorators": "^7.4.4" },
+        { "@babel/plugin-proposal-object-rest-spread": "^7.3.4" },
+        { "@babel/plugin-transform-typescript": "^7.3.2" },
+        { "@babel/preset-env": "^7.3.4" },
+        { "@babel/preset-typescript": "^7.3.3" },
+        { "@types/hoist-non-react-statics": "^3.3.1" },
+        { "@types/react": "^16.8.5" },
+        { "@types/react-dom": "^16.8.2" },
+        { lodash: "^4.17.15" },
+        { tslint: "^5.13.0" },
+        { "tslint-config-prettier": "^1.18.0" },
+        { "tslint-react": "^3.6.0" },
+        { typescript: "^3.3.3333" },
+        { react: "*" },
+        { "react-dom": "*" }
+      ],
+      peerDependencies: [{ react: "*" }, { "react-dom": "*" }]
+    };
+
     if (this.answers.tests) {
-      tsconfig.includes.push('\t\t"./__tests__"');
-      scripts.push('\t\t"test": "jest"');
+      tsconfig.includes.push("./__tests__");
+      package.scripts.push({ test: "jest" });
+      package.devDependencies.push(
+        { "@types/enzyme": "^3.10.3" },
+        { "@types/jest": "^24.0.9" },
+        { "@types/enzyme-adapter-react-16": "^1.0.5" },
+        { "react-test-renderer": "^16.8.6" },
+        { jest: "^24.1.0" },
+        { enzyme: "^3.10.0" },
+        { "enzyme-adapter-react-16": "^1.10.0" },
+        { "ts-jest": "^24.0.0" }
+      );
     } else {
-      scripts.push(
-        '\t\t"test": "echo \\"Warn: No test specified\\" && exit 0"'
-      );
-    }
-    if (this.answers.semanticrelease) {
-      scripts.push(
-        '\t\t"semantic-release": "semantic-release"',
-        '\t\t"cz": "git-cz"'
-      );
-    }
-
-    if (this.answers.travis) {
-      scripts.push('\t\t"travis-deploy-once": "travis-deploy-once"');
-    }
-
-    const devDependencies = [
-      '\t\t"@babel/cli": "^7.2.3"',
-      '\t\t"@babel/core": "^7.3.4"',
-      '\t\t"@babel/plugin-proposal-class-properties": "^7.3.4"',
-      '\t\t"@babel/plugin-proposal-decorators": "^7.4.4"',
-      '\t\t"@babel/plugin-proposal-object-rest-spread": "^7.3.4"',
-      '\t\t"@babel/plugin-transform-typescript": "^7.3.2"',
-      '\t\t"@babel/preset-env": "^7.3.4"',
-      '\t\t"@babel/preset-typescript": "^7.3.3"',
-      '\t\t"@types/hoist-non-react-statics": "^3.3.1"',
-      '\t\t"@types/react": "^16.8.5"',
-      '\t\t"@types/react-dom": "^16.8.2"',
-      '\t\t"lodash": "^4.17.15"',
-      '\t\t"tslint": "^5.13.0"',
-      '\t\t"tslint-config-prettier": "^1.18.0"',
-      '\t\t"tslint-react": "^3.6.0"',
-      '\t\t"typescript": "^3.3.3333"',
-      '\t\t"react": "*"',
-      '\t\t"react-dom": "*"'
-    ];
-
-    const peerDependencies = ['\t\t"react": "*"', '\t\t"react-dom": "*"'];
-
-    const dependencies = [];
-
-    if (this.answers.tests) {
-      devDependencies.push(
-        '\t\t"@types/enzyme": "^3.10.3"',
-        '\t\t"@types/jest": "^24.0.9"',
-        '\t\t"@types/enzyme-adapter-react-16": "^1.0.5"',
-        '\t\t"react-test-renderer": "^16.8.6"',
-        '\t\t"jest": "^24.1.0"',
-        '\t\t"enzyme": "^3.10.0"',
-        '\t\t"enzyme-adapter-react-16": "^1.10.0"',
-        '\t\t"ts-jest": "^24.0.0"'
-      );
+      package.scripts.push({
+        test: 'echo \\"Warn: No test specified\\" && exit 0"'
+      });
     }
 
     if (this.answers.semanticrelease) {
+      package.version = "0.0.0-semantically-released";
+      package.scripts.push({
+        "semantic-release": "semantic-release"
+      });
+      package.scripts.push({
+        cz: "git-cz"
+      });
       if (!this.answers.repository || !this.answers.repository.trim()) {
         console.error(
           this
@@ -76,26 +105,44 @@ module.exports = {
         );
         process.exit(1);
       }
-      devDependencies.push('\t\t"semantic-release": "^15.13.31"');
-      devDependencies.push('\t\t"@semantic-release/changelog": "^3.0.6"');
-      devDependencies.push('\t\t"@semantic-release/commit-analyzer": "^6.3.3"');
-      devDependencies.push('\t\t"@semantic-release/git": "^7.0.18"');
-      devDependencies.push(
-        '\t\t"@semantic-release/release-notes-generator": "^7.3.4"'
-      );
-      devDependencies.push('\t\t"commitizen": "^4.0.3"');
+      package.devDependencies.push({ "semantic-release": "^15.13.31" });
+      package.devDependencies.push({
+        "@semantic-release/changelog": "^3.0.6"
+      });
+      package.devDependencies.push({
+        "@semantic-release/commit-analyzer": "^6.3.3"
+      });
+      package.devDependencies.push({ "@semantic-release/git": "^7.0.18" });
+      package.devDependencies.push({
+        "@semantic-release/release-notes-generator": "^7.3.4"
+      });
+      package.devDependencies.push({ commitizen: "^4.0.3" });
+    }
+
+    if (this.answers.travis) {
+      if (!this.answers.repository || !this.answers.repository.trim()) {
+        console.error(
+          this.chalk`{red No repository url defined while travis ci is enabled}`
+        );
+        process.exit(1);
+      }
+
+      package.scripts.push({
+        "travis-deploy-once": "travis-deploy-once"
+      });
+    }
+
+    if (this.answers.repository) {
+      package.repository = {
+        url: this.answers.repository
+      };
     }
 
     const pmRun = this.answers.pm === "yarn" ? "yarn" : "npm run";
 
     return {
-      tsconfig: {
-        includes: tsconfig.includes.join(",\n")
-      },
-      scripts: scripts.join(",\n"),
-      devDependencies: devDependencies.join(",\n"),
-      peerDependencies: peerDependencies.join(",\n"),
-      dependencies: dependencies.join(",\n"),
+      tsconfig: serializeTSConfig(tsconfig),
+      package: serializePackage(package),
       pmRun
     };
   },
