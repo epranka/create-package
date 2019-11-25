@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/epranka/create-tsx-package/compare/v3.0.3...v3.1.0) (2019-11-25)
+
+
+### Features
+
+* silent option ([d5479cb](https://github.com/epranka/create-tsx-package/commit/d5479cb725a627e2b73153313f1b8693c79bca42))
+
 ## [3.0.3](https://github.com/epranka/create-tsx-package/compare/v3.0.2...v3.0.3) (2019-11-25)
 
 
