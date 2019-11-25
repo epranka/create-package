@@ -2,9 +2,10 @@ const spawn = require("cross-spawn");
 const validate = require("validate-npm-package-name");
 const serializePackage = require("./utils/serializePackage");
 const serializeTSConfig = require("./utils/serializeTSConfig");
+const prompts = require("./prompts");
 
 module.exports = {
-  prompts: require("./prompts"),
+  prompts: prompts,
   templateData() {
     const tsconfig = {
       compilerOptions: {
@@ -147,7 +148,9 @@ module.exports = {
     };
   },
   actions() {
-    const validation = validate(this.answers.name);
+    const validation = validate(
+      (this.answers && this.answers.name) || this.outFolder
+    );
     validation.warnings &&
       validation.warnings.forEach(warn => {
         console.warn("Warning:", warn);
@@ -191,9 +194,11 @@ module.exports = {
     return actions;
   },
   async completed() {
+    const { cliOptions } = this.sao.opts;
+    const silent = cliOptions.silent;
     this.gitInit();
     await this.npmInstall({ npmClient: this.answers.pm });
-    if (this.answers.semanticrelease) {
+    if (!silent && this.answers.semanticrelease) {
       // @TODO console log
       // install semantic release cli
       let options = ["add", "semantic-release-cli"];
@@ -218,6 +223,9 @@ module.exports = {
         cwd: this.outDir,
         stdio: "inherit"
       });
+    }
+
+    if (this.answers.semanticrelease) {
       // Setup commitizen
       spawn.sync(
         "./node_modules/.bin/commitizen",

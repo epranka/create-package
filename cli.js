@@ -24,11 +24,18 @@ const showEnvInfo = async () => {
 cli
   .command("[out-dir]", "Generate in a custom directory or current directory")
   .option(
-    "-i",
-    "--info",
+    "-i, --info",
     "Print out debugging information relating to the local environment"
   )
-  .option("-v", "--verbose", "Show debug logs")
+  .option(
+    "-s, --silent",
+    "Silent mode. Create package without user interaction"
+  )
+  .option("--no-travis", "Don't use travis ci.")
+  .option("--no-tests", "Don't use tests")
+  .option("--no-semantic-release", "Don't use semantic release")
+  .option("--npm", "Use NPM package manager. Default is YARN")
+  .option("--verbose", "Show debug logs")
   .action((outDir = ".", cliOptions) => {
     if (cliOptions.info) {
       return showEnvInfo();
@@ -37,9 +44,9 @@ cli
     console.log(chalk`{cyan @epranka/create-tsx-package v${version}}`);
     console.log(chalk`✨ Generating TSX package in {cyan ${outDir}}`);
 
-    const { verbose } = cliOptions;
+    const { verbose, silent } = cliOptions;
     const logLevel = verbose ? 4 : 2;
-    sao({ generator, outDir, logLevel, cliOptions })
+    sao({ generator, outDir, logLevel, cliOptions, yes: silent })
       .run()
       .catch(err => {
         console.trace(err);
