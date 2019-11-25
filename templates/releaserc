@@ -16,10 +16,6 @@
           {
             "type": "style",
             "release": "patch"
-          },
-          {
-            "type": "improvement",
-            "release": "patch"
           }
         ],
         "parserOpts": {
@@ -41,7 +37,11 @@
       "@semantic-release/git",
       {
         "assets": [
-          "CHANGELOG.md"
+          "CHANGELOG.md",
+          "package.json",
+          "package-lock.json",
+          "yarn-lock.json",
+          "npm-shrinkwrap.json"
         ]
       }
     ]
