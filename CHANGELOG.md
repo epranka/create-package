@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/epranka/create-tsx-package/compare/v3.0.0...v3.0.1) (2019-11-25)
+
+
+### Bug Fixes
+
+* **saofile:** added travis logic ([fb708f3](https://github.com/epranka/create-tsx-package/commit/fb708f37db340553944c8c7e5b20d09f18c9bed9))
+
 # [3.0.0](https://github.com/epranka/create-tsx-package/compare/v2.0.0...v3.0.0) (2019-11-25)
 
 
