@@ -1,4 +1,5 @@
 language: node_js
+os: linux
 
 node_js:
   - 12.3.1
@@ -6,12 +7,18 @@ node_js:
 jobs:
   include:
     # Define the release stage that runs semantic-release
+    - stage: test
+      node_js: lts/*
+      script: test
+    - stage: build
+      node_js: lts/*
+      script: build
     - stage: release
       node_js: lts/*
       # Advanced: optionally overwrite your default `script` step to skip the tests
-      # script: skip
+      script: skip
       deploy:
         provider: script
-        skip_cleanup: true
+        cleanup: false
         script:
           - npx semantic-release
