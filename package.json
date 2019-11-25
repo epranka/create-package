@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/epranka/create-tsx-package.git"
+    "url": "git+https://github.com/epranka/create-tsx-package.git"
   },
   "keywords": [
     "react",
@@ -42,6 +42,7 @@
     }
   ],
   "devDependencies": {
+    "@semantic-release/changelog": "^3.0.6",
     "cz-conventional-changelog": "^3.0.2",
     "semantic-release": "^15.13.31"
   },

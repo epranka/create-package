@@ -1,42 +1,27 @@
 {
   "compilerOptions": {
-    "baseUrl": "src",
-    "paths": {
-      "*": [
-        "types/*"
-      ]
-    },
+    "outDir": "./lib",
     "target": "esnext",
     "moduleResolution": "node",
-    "module": "commonjs",
+    "module": "esnext",
     "jsx": "react",
-    "lib": [
-      "es2016",
-      "dom",
-      "es5"
-    ],
+    "skipLibCheck": true,
+    "lib": ["dom", "es6"],
     "experimentalDecorators": true,
     "declaration": true,
     "sourceMap": true,
-    "outDir": "./dist",
     "removeComments": true,
     "noImplicitAny": false,
     "noImplicitThis": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "typeRoots": [
-      "node_modules/@types"
-    ]
+    "allowSyntheticDefaultImports": true
   },
   "exclude": [
     "node_modules",
-    "dist",
-    "__tests__"
   ],
   "include": [
-    "./src/**/*.tsx",
-    "./src/**/*.ts"
+    "./src"
   ]
 }

@@ -46,6 +46,10 @@ module.exports = {
       '\t\t"typescript": "^3.3.3333"'
     ];
 
+    const peerDependencies = ['\t\t"react": "*"', '\t\t"react-dom": "*"'];
+
+    const dependencies = [];
+
     if (this.answers.tests) {
       devDependencies.push(
         '\t\t"@types/enzyme": "^3.10.3"',
@@ -76,6 +80,8 @@ module.exports = {
     return {
       scripts: scripts.join(",\n"),
       devDependencies: devDependencies.join(",\n"),
+      peerDependencies: peerDependencies.join(",\n"),
+      dependencies: dependencies.join(",\n"),
       pmRun
     };
   },
