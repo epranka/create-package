@@ -1,0 +1,13 @@
+import React from "react";
+import Enzyme, { mount } from "enzyme";
+import Adapter from "enzyme-adapter-react-16";
+import App from "../src";
+
+Enzyme.configure({ adapter: new Adapter() });
+
+describe("Test starter kit", () => {
+	it("App contains 'Hello world'", () => {
+		const app = mount(<App />);
+		expect(app.text()).toEqual("Hello World");
+	});
+});

@@ -1,3 +1,4 @@
+const getRepositoryURL = require("./utils/repository");
 const { random } = require("superb");
 
 module.exports = [
@@ -34,7 +35,16 @@ module.exports = [
     default: true
   },
   {
+    name: "travis",
+    message: "Use Travis ?",
+    type: "confirm",
+    default: true
+  },
+  {
     name: "repository",
-    message: "Respository URL (required if semantic release enabled)"
+    message: "Respository URL",
+    default: async () => {
+      return await getRepositoryURL();
+    }
   }
 ];
