@@ -1,3 +1,10 @@
+## [3.1.1](https://github.com/epranka/create-tsx-package/compare/v3.1.0...v3.1.1) (2019-11-25)
+
+
+### Bug Fixes
+
+* **semantic-release:** update package.json version ([42ae9b9](https://github.com/epranka/create-tsx-package/commit/42ae9b9320956278c141f31d68ef67dd207a1672))
+
 # [3.1.0](https://github.com/epranka/create-tsx-package/compare/v3.0.3...v3.1.0) (2019-11-25)
 
 
