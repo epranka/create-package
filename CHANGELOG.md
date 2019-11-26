@@ -1,3 +1,10 @@
+## [3.6.5](https://github.com/epranka/create-tsx-package/compare/v3.6.4...v3.6.5) (2019-11-26)
+
+
+### Bug Fixes
+
+* fixed duplicated dependencies ([03e8536](https://github.com/epranka/create-tsx-package/commit/03e853608ebdb28e2a5aa038dffc64818e623e09)), closes [#26](https://github.com/epranka/create-tsx-package/issues/26)
+
 ## [3.6.4](https://github.com/epranka/create-tsx-package/compare/v3.6.3...v3.6.4) (2019-11-26)
 
 ## [3.6.3](https://github.com/epranka/create-tsx-package/compare/v3.6.2...v3.6.3) (2019-11-26)
