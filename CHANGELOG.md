@@ -1,3 +1,10 @@
+# [3.6.0](https://github.com/epranka/create-tsx-package/compare/v3.5.1...v3.6.0) (2019-11-26)
+
+
+### Features
+
+* private:true property as default ([efeefe2](https://github.com/epranka/create-tsx-package/commit/efeefe2d2c02b90b5a076cb248d39bb8102fb801)), closes [#13](https://github.com/epranka/create-tsx-package/issues/13) [#18](https://github.com/epranka/create-tsx-package/issues/18)
+
 ## [3.5.1](https://github.com/epranka/create-tsx-package/compare/v3.5.0...v3.5.1) (2019-11-26)
 
 # [3.5.0](https://github.com/epranka/create-tsx-package/compare/v3.4.0...v3.5.0) (2019-11-26)
