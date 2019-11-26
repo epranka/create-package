@@ -1,3 +1,10 @@
+# [3.5.0](https://github.com/epranka/create-tsx-package/compare/v3.4.0...v3.5.0) (2019-11-26)
+
+
+### Features
+
+* added --description and --name options ([cf58433](https://github.com/epranka/create-tsx-package/commit/cf58433361d66e9ac93c802f8ae53621a68ba018))
+
 # [3.4.0](https://github.com/epranka/create-tsx-package/compare/v3.3.0...v3.4.0) (2019-11-26)
 
 
