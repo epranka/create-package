@@ -1,3 +1,10 @@
+# [3.4.0](https://github.com/epranka/create-tsx-package/compare/v3.3.0...v3.4.0) (2019-11-26)
+
+
+### Features
+
+* added README generator ([eafe84c](https://github.com/epranka/create-tsx-package/commit/eafe84cbde1424b2a0740a5ab935729d918ca073))
+
 # [3.3.0](https://github.com/epranka/create-tsx-package/compare/v3.2.0...v3.3.0) (2019-11-26)
 
 
