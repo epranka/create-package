@@ -12,6 +12,7 @@ const prompts = require("./prompts");
 module.exports = {
   prompts: prompts,
   templateData() {
+    const { cliOptions } = this.sao.opts;
     const author = this.answers.author;
     const email = this.answers.email;
     const year = new Date().getFullYear();
@@ -44,8 +45,10 @@ module.exports = {
     const package = {
       name: this.answers.name,
       description: this.answers.description,
+      private: undefined,
       version: "0.0.1",
       main: "lib/index.js",
+      module: undefined,
       types: "lib/index.d.ts",
       files: ["lib"],
       publishConfig: { access: "public" },
@@ -106,6 +109,9 @@ module.exports = {
         "...Object.keys(pkg.peerDependencies || {})"
       ]
     };
+    if (cliOptions.private) {
+      package.private = true;
+    }
 
     if (this.answers.license === "mit") {
       package.license = "MIT";
