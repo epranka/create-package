@@ -213,9 +213,6 @@ module.exports = {
         "@semantic-release/release-notes-generator": "^7.3.4"
       });
       package.devDependencies.push({
-        "@semantic-release/git": "^7.3.4"
-      });
-      package.devDependencies.push({
         "@semantic-release/npm": "^5.3.4"
       });
       package.devDependencies.push({ commitizen: "^4.0.3" });
