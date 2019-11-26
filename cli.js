@@ -22,7 +22,7 @@ const showEnvInfo = async () => {
 };
 
 cli
-  .command("[out-dir]", "Generate in a custom directory or current directory")
+  .command("[out-dir]", "Generate in a <out-dir> or current directory")
   .option(
     "-i, --info",
     "Print out debugging information relating to the local environment"
@@ -31,7 +31,11 @@ cli
     "-s, --silent",
     "Silent mode. Create package without user interaction"
   )
+  .option("--author <fullname>", "Author of package <fullname>")
+  .option("--email <email>", "<email> of author")
+  .option("--mit", "MIT license. Default is ISC")
   .option("--umd <GlobalName>", "Build UMD module with <GlobalName>")
+  .option("--unlicensed", "Unlicensed. This option overrides --mit option")
   .option("--no-es", "Don't build ES Module")
   .option("--no-travis", "Don't use travis ci.")
   .option("--no-tests", "Don't use tests")
