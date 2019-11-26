@@ -8,8 +8,16 @@
     "sao": "^1.7.0",
     "semantic-release": "^15.13.31",
     "superb": "^4.0.0",
-    "validate-npm-package-name": "^3.0.0"
+    "validate-npm-package-name": "^3.0.0",
+    "@semantic-release/changelog": "^3.0.6",
+    "@semantic-release/commit-analyzer": "^6.3.3",
+    "@semantic-release/git": "^7.0.18",
+    "@semantic-release/npm": "^5.3.4",
+    "@semantic-release/release-notes-generator": "^7.3.4",
+    "cz-conventional-changelog": "^3.0.2",
+    "js-beautify": "^1.10.2"
   },
+  "devDependencies": {},
   "bin": "./cli.js",
   "scripts": {
     "test": "exit 0",
@@ -42,15 +50,6 @@
       "email": "epranka@gmail.com"
     }
   ],
-  "devDependencies": {
-    "@semantic-release/changelog": "^3.0.6",
-    "@semantic-release/commit-analyzer": "^6.3.3",
-    "@semantic-release/git": "^7.0.18",
-    "@semantic-release/release-notes-generator": "^7.3.4",
-    "cz-conventional-changelog": "^3.0.2",
-    "js-beautify": "^1.10.2",
-    "semantic-release": "^15.13.31"
-  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
