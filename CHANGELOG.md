@@ -1,3 +1,5 @@
+## [3.5.1](https://github.com/epranka/create-tsx-package/compare/v3.5.0...v3.5.1) (2019-11-26)
+
 # [3.5.0](https://github.com/epranka/create-tsx-package/compare/v3.4.0...v3.5.0) (2019-11-26)
 
 
