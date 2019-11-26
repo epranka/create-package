@@ -1,10 +1,7 @@
 {
-  "presets": [
-    "@babel/typescript",
-    "@babel/env"
-  ],
+  "presets": ["@babel/typescript", "@babel/env"],
   "plugins": [
-    ["@babel/plugin-proposal-decorators", {"legacy": true}],
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread",
     "@babel/plugin-transform-typescript"
