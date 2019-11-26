@@ -3,6 +3,7 @@ const validate = require("validate-npm-package-name");
 const serializePackage = require("./utils/serializePackage");
 const serializeTSConfig = require("./utils/serializeTSConfig");
 const serializeRollupConfig = require("./utils/serializeRollupConfig");
+const createREADME = require("./utils/createREADME");
 const createMITLicense = require("./utils/createMITLicense");
 const createISCLicense = require("./utils/createISCLicense");
 const createUNLICENSEDLicense = require("./utils/createUNLICENSEDLicense");
@@ -118,6 +119,14 @@ module.exports = {
       });
     }
 
+    const readmeContent = createREADME({
+      name: package.name,
+      description: package.description,
+      author,
+      email,
+      licenseContent
+    });
+
     if (this.answers.umd) {
       if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
         console.error(
@@ -226,6 +235,7 @@ module.exports = {
       package: serializePackage(package),
       rollupConfig: serializeRollupConfig(rollupConfig),
       licenseContent,
+      readmeContent,
       pmRun
     };
   },
@@ -268,6 +278,7 @@ module.exports = {
         jest_config_js: "jest.config.js",
         rollup_config_js: "rollup.config.js",
         releaserc: ".releaserc",
+        README_md: "README.md",
         _package_json: "package.json",
         _tsconfig_json: "tsconfig.json",
         _tslint_json: "tslint.json"
