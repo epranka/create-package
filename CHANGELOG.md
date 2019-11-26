@@ -1,3 +1,10 @@
+# [3.3.0](https://github.com/epranka/create-tsx-package/compare/v3.2.0...v3.3.0) (2019-11-26)
+
+
+### Features
+
+* added license option ([a63b436](https://github.com/epranka/create-tsx-package/commit/a63b436b4e6ed3aef7a1ab4d70183dd4a1ac2c67))
+
 # [3.2.0](https://github.com/epranka/create-tsx-package/compare/v3.1.1...v3.2.0) (2019-11-26)
 
 
