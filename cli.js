@@ -38,6 +38,7 @@ cli
   .option("--mit", "MIT license. Default is ISC")
   .option("--umd <GlobalName>", "Build UMD module with <GlobalName>")
   .option("--unlicensed", "Unlicensed. This option overrides --mit option")
+  .option("--no-private", "No private:true property in package.json")
   .option("--no-es", "Don't build ES Module")
   .option("--no-travis", "Don't use travis ci.")
   .option("--no-tests", "Don't use tests")
