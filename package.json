@@ -1,7 +1,7 @@
 {
   "name": "@epranka/create-tsx-package",
   "description": "Starter kit for React Typescript module",
-  "version": "3.6.5",
+  "version": "3.6.6",
   "dependencies": {
     "cac": "^6.5.3",
     "chalk": "^3.0.0",
