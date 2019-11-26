@@ -1,3 +1,10 @@
+## [3.6.3](https://github.com/epranka/create-tsx-package/compare/v3.6.2...v3.6.3) (2019-11-26)
+
+
+### Bug Fixes
+
+* fixed npm publish in generated package ([a1b7326](https://github.com/epranka/create-tsx-package/commit/a1b7326d672e527323ea55ac8f0128c74b6f4fc1)), closes [#24](https://github.com/epranka/create-tsx-package/issues/24)
+
 ## [3.6.2](https://github.com/epranka/create-tsx-package/compare/v3.6.1...v3.6.2) (2019-11-26)
 
 
