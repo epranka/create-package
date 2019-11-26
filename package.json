@@ -48,6 +48,7 @@
     "@semantic-release/git": "^7.0.18",
     "@semantic-release/release-notes-generator": "^7.3.4",
     "cz-conventional-changelog": "^3.0.2",
+    "js-beautify": "^1.10.2",
     "semantic-release": "^15.13.31"
   },
   "config": {

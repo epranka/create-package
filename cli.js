@@ -31,6 +31,8 @@ cli
     "-s, --silent",
     "Silent mode. Create package without user interaction"
   )
+  .option("--umd <GlobalName>", "Build UMD module with <GlobalName>")
+  .option("--no-es", "Don't build ES Module")
   .option("--no-travis", "Don't use travis ci.")
   .option("--no-tests", "Don't use tests")
   .option("--no-semantic-release", "Don't use semantic release")
@@ -58,4 +60,4 @@ cli.help();
 
 cli.version(version);
 
-cli.parse();
+global["parsedArgs"] = cli.parse();

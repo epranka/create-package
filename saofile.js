@@ -2,6 +2,7 @@ const spawn = require("cross-spawn");
 const validate = require("validate-npm-package-name");
 const serializePackage = require("./utils/serializePackage");
 const serializeTSConfig = require("./utils/serializeTSConfig");
+const serializeRollupConfig = require("./utils/serializeRollupConfig");
 const prompts = require("./prompts");
 
 module.exports = {
@@ -35,7 +36,6 @@ module.exports = {
       description: this.answers.description,
       version: "0.0.1",
       main: "lib/index.js",
-      module: "lib/index.es.js",
       types: "lib/index.d.ts",
       files: ["lib"],
       publishConfig: { access: "public" },
@@ -75,6 +75,61 @@ module.exports = {
       ],
       peerDependencies: [{ react: "*" }, { "react-dom": "*" }]
     };
+
+    const rollupConfig = {
+      input: "./src/index.tsx",
+      output: [],
+      plugins: [
+        `progress({clearLines: false})`,
+        `del({targets: [
+          "lib/*"
+        ]})`,
+        `commonjs({
+          namedExports: {}
+        })`,
+        `typescript()`,
+        `minify()`,
+        `cleanup()`
+      ],
+      external: [
+        "...Object.keys(pkg.dependencies || {})",
+        "...Object.keys(pkg.peerDependencies || {})"
+      ]
+    };
+
+    if (this.answers.umd) {
+      if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
+        console.error(
+          this
+            .chalk`{red No global UMD name defined while UMD module build is enabled}`
+        );
+        process.exit(1);
+      }
+      const umdOutput = `{
+        file: pkg.main,
+        format: "umd",
+        name: "${this.answers.umd_name}",
+        globals: {
+          react: "React"
+        }
+      }`;
+      rollupConfig.output.push(umdOutput);
+    } else {
+      const cjsOutput = `{
+        file: pkg.main,
+        format: "cjs"
+      }`;
+      rollupConfig.output.push(cjsOutput);
+    }
+
+    if (this.answers.es) {
+      package.module = "lib/index.es.js";
+      const esOutput = `{
+        file: pkg.module,
+        format: "es"
+      }`;
+      rollupConfig.output.push(esOutput);
+    }
 
     if (this.answers.tests) {
       tsconfig.includes.push("./__tests__");
@@ -148,6 +203,7 @@ module.exports = {
     return {
       tsconfig: serializeTSConfig(tsconfig),
       package: serializePackage(package),
+      rollupConfig: serializeRollupConfig(rollupConfig),
       pmRun
     };
   },
