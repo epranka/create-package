@@ -44,10 +44,7 @@ module.exports = {
       contributors: [],
       repository: "",
       license: "MIT",
-      scripts: [
-        { build: "rm -rf ./lib/** && tsx" },
-        { watch: "tsc -- --watch" }
-      ],
+      scripts: [{ build: "rollup -c" }, { watch: "rollup -cw" }],
       dependencies: [],
       devDependencies: [
         { "@babel/cli": "^7.2.3" },
@@ -67,7 +64,14 @@ module.exports = {
         { "tslint-react": "^3.6.0" },
         { typescript: "^3.3.3333" },
         { react: "*" },
-        { "react-dom": "*" }
+        { "react-dom": "*" },
+        { rollup: "^1.27.5" },
+        { "rollup-plugin-babel-minify": "^9.1.1" },
+        { "rollup-plugin-cleanup": "^3.1.1" },
+        { "rollup-plugin-commonjs": "^10.1.0" },
+        { "rollup-plugin-delete": "^1.1.0" },
+        { "rollup-plugin-progress": "^1.1.1" },
+        { "rollup-plugin-typescript2": "^0.25.2" }
       ],
       peerDependencies: [{ react: "*" }, { "react-dom": "*" }]
     };
@@ -184,6 +188,7 @@ module.exports = {
         babelrc: ".babelrc",
         travis_yml: ".travis.yml",
         jest_config_js: "jest.config.js",
+        rollup_config_js: "rollup.config.js",
         releaserc: ".releaserc",
         _package_json: "package.json",
         _tsconfig_json: "tsconfig.json",
