@@ -1,17 +1,4 @@
-# @epranka/create-tsx-package
-
-<a href="http://twitter.com/share?text=Hey! I found this!&url=https://github.com/epranka/create-tsx-package">
-  <img src="https://img.shields.io/twitter/url/http/github.com/epranka/create-tsx-package.svg?style=social"
-       alt="tweet" />
-</a>
-
-<a href="https://www.npmjs.com/package/@epranka/create-tsx-package">
-    <img src="https://badge.fury.io/js/%40epranka%2Fcreate-tsx-package.svg">
-</a>
-
-<a href="https://www.npmjs.com/package/@epranka/create-tsx-package">
-<img src="https://img.shields.io/npm/dt/@epranka/create-tsx-package.svg?style=flat" />
-</a>
+# @epranka/create-tsx-package &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE) [![npm version](https://img.shields.io/npm/v/@epranka/create-tsx-package.svg?style=flat)](https://www.npmjs.com/package/@epranka/create-tsx-package) [![npm downloads](https://img.shields.io/npm/dt/@epranka/create-tsx-package.svg?style=flat)](https://www.npmjs.com/package/@epranka/create-tsx-package) [![Build Status](https://travis-ci.org/epranka/create-tsx-package.svg?branch=master)](https://travis-ci.org/epranka/create-tsx-package) [![tweet](https://img.shields.io/twitter/url/http/github.com/epranka/create-tsx-package.svg?style=flat)](http%3A//twitter.com/share%3Ftext%3DHey%21%20I%20found%20this%21%26url%3Dhttps%3A//github.com/epranka/create-tsx-package)
 
 Starter kit for React Typescript module
 
