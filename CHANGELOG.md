@@ -1,3 +1,11 @@
+# [3.2.0](https://github.com/epranka/create-tsx-package/compare/v3.1.1...v3.2.0) (2019-11-26)
+
+
+### Features
+
+* added options for umd, cjs, es modules ([da185fb](https://github.com/epranka/create-tsx-package/commit/da185fb4640cc3b919ff9f2c64d073cce61cbb2a))
+* added rollup bundler ([543cafd](https://github.com/epranka/create-tsx-package/commit/543cafdbcbd01c15d28d92aceda192dc416b5066))
+
 ## [3.1.1](https://github.com/epranka/create-tsx-package/compare/v3.1.0...v3.1.1) (2019-11-25)
 
 
