@@ -2,6 +2,15 @@ const getRepositoryURL = require("./utils/repository");
 const { random } = require("superb");
 
 const { options } = global["parsedArgs"];
+let license = "isc";
+if (options["mit"]) {
+  license = "mit";
+}
+if (options["unlicensed"]) {
+  license = "unlicensed";
+}
+const author = options.author;
+const email = options.email;
 const umdBuild = !!options.umd;
 const umdName = options.umd;
 const esBuild = options.es;
@@ -20,6 +29,36 @@ module.exports = [
     name: "description",
     message: "Package description",
     default: `My ${random()} TSX package`
+  },
+  {
+    name: "author",
+    message: "Full name of package author",
+    default: author
+  },
+  {
+    name: "email",
+    message: "Email of package author",
+    default: email
+  },
+  {
+    name: "license",
+    message: "Select license",
+    choices: [
+      {
+        name: "ISC",
+        value: "isc"
+      },
+      {
+        name: "MIT",
+        value: "mit"
+      },
+      {
+        name: "Unlicensed",
+        value: "unlicensed"
+      }
+    ],
+    type: "list",
+    default: license
   },
   {
     name: "pm",

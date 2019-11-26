@@ -3,11 +3,20 @@ const validate = require("validate-npm-package-name");
 const serializePackage = require("./utils/serializePackage");
 const serializeTSConfig = require("./utils/serializeTSConfig");
 const serializeRollupConfig = require("./utils/serializeRollupConfig");
+const createMITLicense = require("./utils/createMITLicense");
+const createISCLicense = require("./utils/createISCLicense");
+const createUNLICENSEDLicense = require("./utils/createUNLICENSEDLicense");
 const prompts = require("./prompts");
 
 module.exports = {
   prompts: prompts,
   templateData() {
+    const author = this.answers.author;
+    const email = this.answers.email;
+    const year = new Date().getFullYear();
+
+    let licenseContent = createISCLicense({ year, author, email });
+
     const tsconfig = {
       compilerOptions: {
         outDir: "./lib",
@@ -43,7 +52,7 @@ module.exports = {
       author: "",
       contributors: [],
       repository: "",
-      license: "MIT",
+      license: "ISC",
       scripts: [{ build: "rollup -c" }, { watch: "rollup -cw" }],
       dependencies: [],
       devDependencies: [
@@ -96,6 +105,18 @@ module.exports = {
         "...Object.keys(pkg.peerDependencies || {})"
       ]
     };
+
+    if (this.answers.license === "mit") {
+      package.license = "MIT";
+      licenseContent = createMITLicense({ year, author, email });
+    } else if (this.answers.license === "unlicensed") {
+      package.license = "UNLICENSED";
+      licenseContent = createUNLICENSEDLicense({
+        year,
+        author,
+        email
+      });
+    }
 
     if (this.answers.umd) {
       if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
@@ -204,6 +225,7 @@ module.exports = {
       tsconfig: serializeTSConfig(tsconfig),
       package: serializePackage(package),
       rollupConfig: serializeRollupConfig(rollupConfig),
+      licenseContent,
       pmRun
     };
   },
