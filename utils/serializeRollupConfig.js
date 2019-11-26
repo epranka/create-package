@@ -25,8 +25,7 @@ const serializeRollupConfig = rollupConfig => {
   `;
 
   const formatted = beautify(rollupResult, {
-    indent_with_tabs: true,
-    indent_size: 4
+    indent_size: 2
   });
 
   return formatted;

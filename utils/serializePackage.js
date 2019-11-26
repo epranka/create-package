@@ -14,7 +14,7 @@ const serializePackage = package => {
   converToObject(clonedPackage, "dependencies");
   converToObject(clonedPackage, "devDependencies");
   converToObject(clonedPackage, "peerDependencies");
-  return JSON.stringify(clonedPackage, null, 4);
+  return JSON.stringify(clonedPackage, null, 2);
 };
 
 module.exports = serializePackage;
