@@ -9,6 +9,8 @@ if (options["mit"]) {
 if (options["unlicensed"]) {
   license = "unlicensed";
 }
+const name = options.name;
+const description = options.description;
 const author = options.author;
 const email = options.email;
 const umdBuild = !!options.umd;
@@ -23,12 +25,12 @@ module.exports = [
   {
     name: "name",
     message: "Package name",
-    default: "{outFolder}"
+    default: name ? name : "{outFolder}"
   },
   {
     name: "description",
     message: "Package description",
-    default: `My ${random()} TSX package`
+    default: description ? description : `My ${random()} TSX package`
   },
   {
     name: "author",

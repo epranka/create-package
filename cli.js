@@ -31,6 +31,8 @@ cli
     "-s, --silent",
     "Silent mode. Create package without user interaction"
   )
+  .option("--name <name>", "Name of the package")
+  .option("--description <name>", "Description of the package")
   .option("--author <fullname>", "Author of package <fullname>")
   .option("--email <email>", "<email> of author")
   .option("--mit", "MIT license. Default is ISC")
