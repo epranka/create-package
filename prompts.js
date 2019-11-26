@@ -1,11 +1,14 @@
 const getRepositoryURL = require("./utils/repository");
 const { random } = require("superb");
 
-const args = process.argv;
-const useTravis = !args.includes("--no-travis");
-const useTests = !args.includes("--no-tests");
-const useSemanticRelease = !args.includes("--no-semantic-release");
-const useNPM = args.includes("--npm");
+const { options } = global["parsedArgs"];
+const umdBuild = !!options.umd;
+const umdName = options.umd;
+const esBuild = options.es;
+const useTravis = options.travis;
+const useTests = options.tests;
+const useSemanticRelease = options["semantic-release"];
+const useNPM = options["npm"];
 
 module.exports = [
   {
@@ -27,6 +30,28 @@ module.exports = [
     ],
     type: "list",
     default: useNPM ? "npm" : "yarn"
+  },
+  {
+    name: "umd",
+    message: "Build to UMD module for browsers (CommonJS is default) ?",
+    type: "confirm",
+    default: umdBuild
+  },
+  {
+    name: "umd_name",
+    message:
+      "What is a global name of your package in browser (e.g. React, ReactDOM) ?",
+    default: umdName,
+    when: answers => {
+      if (answers["umd"]) return true;
+      return false;
+    }
+  },
+  {
+    name: "es",
+    message: "Build to ES Module ?",
+    type: "confirm",
+    default: esBuild
   },
   {
     name: "tests",
