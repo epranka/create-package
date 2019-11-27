@@ -1,6 +1,23 @@
-# @epranka/create-tsx-package &middot; [![GitHub license](https://img.shields.io/badge/license-ISC-blue.svg)](./LICENSE) [![npm version](https://img.shields.io/npm/v/@epranka/create-tsx-package.svg?style=flat)](https://www.npmjs.com/package/@epranka/create-tsx-package) [![npm downloads](https://img.shields.io/npm/dt/@epranka/create-tsx-package.svg?style=flat)](https://www.npmjs.com/package/@epranka/create-tsx-package) [![Build Status](https://travis-ci.org/epranka/create-tsx-package.svg?branch=master)](https://travis-ci.org/epranka/create-tsx-package) [![tweet](https://img.shields.io/twitter/url/http/github.com/epranka/create-tsx-package.svg?style=flat)](http%3A//twitter.com/share%3Ftext%3DHey%21%20I%20found%20this%21%26url%3Dhttps%3A//github.com/epranka/create-tsx-package)
+<h1 align="center" style="border-bottom: none;">⚒️ @epranka/create-tsx-package</h1>
 
-Starter kit for React Typescript module
+<h3 align="center">Starter kit for React Typescript module</h3>
+
+<p align="center">
+        <a href="./LICENSE">
+    <img alt="license" src="https://img.shields.io/badge/license-ISC-blue.svg" />
+  </a>
+   <a href="https://www.npmjs.com/package/@epranka/create-tsx-package">
+    <img alt="npm version" src="https://img.shields.io/npm/v/@epranka/create-tsx-package.svg?style=flat" />
+  </a> <a href="https://www.npmjs.com/package/@epranka/create-tsx-package">
+    <img alt="npm downloads" src="https://img.shields.io/npm/dt/@epranka/create-tsx-package.svg?style=flat" />
+  </a> <a href="https://travis-ci.org/epranka/create-tsx-package">
+      <img alt="build status" src="https://travis-ci.org/epranka/create-tsx-package.svg?branch=master" />
+    </a> <a href="https://travis-ci.org/epranka/create-tsx-package">
+      <img alt="ci travis" src="https://img.shields.io/badge/ci-travis-yellow" />
+    </a> <a href="https://github.com/semantic-release/semantic-release">
+      <img alt="semantic release" src="https://img.shields.io/badge/%E2%9C%A8-semantic--release-e10079" />
+    </a> 
+</p>
 
 ## Features
 
@@ -117,6 +134,28 @@ my-package
   # or
 
   $ yarn watch
+```
+
+## Badge
+
+Let people know that your package is generated using **@epranka/create-tsx-package** by including this badge in your readme
+
+<a href="https://github.com/epranka/create-tsx-package">
+  <img alt="generated with" src="https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--tsx--package-blue" />
+</a>
+
+Using Markdown
+
+```
+[![generated with @epranka/create-tsx-package](https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--tsx--package-blue)](https://github.com/epranka/create-tsx-package)
+```
+
+Using HTML
+
+```
+<a href="https://github.com/epranka/create-tsx-package">
+  <img alt="generated with" src="https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--tsx--package-blue" />
+</a>
 ```
 
 ## Author
