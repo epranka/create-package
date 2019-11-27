@@ -7,7 +7,8 @@ const createBadges = ({
   repository,
   semanticrelease,
   es,
-  umd
+  umd,
+  type
 }) => {
   const badges = [];
   const licenseBadge = `<a href="./LICENSE">
@@ -41,7 +42,10 @@ const createBadges = ({
     </a>`;
     badges.push(esBadge);
   }
-  badges.push(typescriptBadge, npmVersion, npmDownloads);
+  if (type === "tsx" || type === "ts") {
+    badges.push(typescriptBadge);
+  }
+  badges.push(npmVersion, npmDownloads);
   if (travis && repository) {
     const gitUrl = gitUrlParse(repository);
     const travisBadge = `<a href="https://travis-ci.org/${gitUrl.full_name}">
@@ -84,7 +88,8 @@ const createREADME = ({
   semanticrelease,
   es,
   umd,
-  umd_name
+  umd_name,
+  type
 }) => {
   const nameBlock = [];
   const descriptionBlock = [];
@@ -103,7 +108,8 @@ const createREADME = ({
     license,
     semanticrelease,
     es,
-    umd
+    umd,
+    type
   });
 
   const readme = [];
