@@ -1,6 +1,6 @@
 {
-  "name": "@epranka/create-tsx-package",
-  "description": "Starter kit for React Typescript module",
+  "name": "@epranka/create-package",
+  "description": "Ultimate starter kit for JS, JSX, TS, TSX module",
   "version": "3.7.0",
   "dependencies": {
     "cac": "^6.5.3",
@@ -31,9 +31,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/epranka/create-tsx-package.git"
+    "url": "git+https://github.com/epranka/create-package.git"
   },
   "keywords": [
+    "javascript",
+    "umd",
+    "module",
     "react",
     "typescript",
     "npm",
@@ -44,7 +47,18 @@
     "epranka",
     "starter",
     "kit",
-    "runner"
+    "runner",
+    "template",
+    "generator",
+    "boilerplate",
+    "jsx",
+    "js",
+    "ts",
+    "tsx",
+    "semantic",
+    "release",
+    "travis",
+    "create"
   ],
   "author": "Edvinas Pranka, Kodmina, https://www.kodmina.lt",
   "contributors": [

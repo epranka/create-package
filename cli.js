@@ -7,7 +7,7 @@ const envinfo = require("envinfo");
 const { version } = require("./package.json");
 
 const generator = path.resolve(__dirname, "./");
-const cli = cac("create-tsx-package");
+const cli = cac("create-package");
 
 const showEnvInfo = async () => {
   console.log(chalk.bold("\nEnvironment Info:"));
@@ -15,7 +15,7 @@ const showEnvInfo = async () => {
     System: ["OS", "CPU"],
     Binaries: ["Node", "Yarn", "npm"],
     Browsers: ["Chrome", "Edge", "Firefox", "Safari"],
-    npmGlobalPackages: ["@epranka/create-tsx-package"]
+    npmGlobalPackages: ["@epranka/create-package"]
   });
   console.log(result);
   process.exit(1);
@@ -50,7 +50,7 @@ cli
       return showEnvInfo();
     }
     console.log();
-    console.log(chalk`{cyan @epranka/create-tsx-package v${version}}`);
+    console.log(chalk`{cyan @epranka/create-package v${version}}`);
     console.log(chalk`✨ Generating TSX package in {cyan ${outDir}}`);
 
     const { verbose, silent } = cliOptions;
