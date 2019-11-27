@@ -25,7 +25,7 @@ module.exports = {
         target: "esnext",
         moduleResolution: "node",
         module: "esnext",
-        jsx: "react",
+        jsx: undefined,
         skipLibCheck: true,
         lib: ["dom", "es6"],
         experimentalDecorators: true,
@@ -68,16 +68,10 @@ module.exports = {
         { "@babel/plugin-transform-typescript": "^7.3.2" },
         { "@babel/preset-env": "^7.3.4" },
         { "@babel/preset-typescript": "^7.3.3" },
-        { "@types/hoist-non-react-statics": "^3.3.1" },
-        { "@types/react": "^16.8.5" },
-        { "@types/react-dom": "^16.8.2" },
         { lodash: "^4.17.15" },
         { tslint: "^5.13.0" },
         { "tslint-config-prettier": "^1.18.0" },
-        { "tslint-react": "^3.6.0" },
         { typescript: "^3.3.3333" },
-        { react: "*" },
-        { "react-dom": "*" },
         { rollup: "^1.27.5" },
         { "rollup-plugin-babel-minify": "^9.1.1" },
         { "rollup-plugin-cleanup": "^3.1.1" },
@@ -86,7 +80,7 @@ module.exports = {
         { "rollup-plugin-progress": "^1.1.1" },
         { "rollup-plugin-typescript2": "^0.25.2" }
       ],
-      peerDependencies: [{ react: "*" }, { "react-dom": "*" }]
+      peerDependencies: []
     };
 
     const authorObject = [];
@@ -100,7 +94,7 @@ module.exports = {
     }
 
     const rollupConfig = {
-      input: "./src/index.tsx",
+      input: undefined, //"./src/index.tsx",
       output: [],
       plugins: [
         `progress({clearLines: false})`,
@@ -110,7 +104,13 @@ module.exports = {
         `commonjs({
           namedExports: {}
         })`,
-        `typescript()`,
+        this.answers.tests
+          ? `typescript({
+          tsconfigOverride: {
+            exclude: ["./__tests__"]
+          }
+        })`
+          : `typescript()`,
         `minify()`,
         `cleanup()`
       ],
@@ -121,6 +121,22 @@ module.exports = {
     };
     if (cliOptions.private) {
       package.private = true;
+    }
+
+    if (this.answers.type === "tsx") {
+      tsconfig.compilerOptions.jsx = "react";
+      rollupConfig.input = "./src/index.tsx";
+      package.devDependencies.push(
+        { "@types/hoist-non-react-statics": "^3.3.1" },
+        { "@types/react": "^16.8.5" },
+        { "@types/react-dom": "^16.8.2" },
+        { react: "*" },
+        { "react-dom": "*" },
+        { "tslint-react": "^3.6.0" }
+      );
+      package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
+    } else if (this.answers.type === "ts") {
+      rollupConfig.input = "./src/index.ts";
     }
 
     if (this.answers.license === "mit") {
@@ -148,7 +164,7 @@ module.exports = {
         format: "umd",
         name: "${this.answers.umd_name}",
         globals: {
-          react: "React"
+          ${this.answers.type === "tsx" ? `react: "React"` : ""}
         }
       }`;
       rollupConfig.output.push(umdOutput);
@@ -173,15 +189,19 @@ module.exports = {
       tsconfig.includes.push("./__tests__");
       package.scripts.push({ test: "jest" });
       package.devDependencies.push(
-        { "@types/enzyme": "^3.10.3" },
         { "@types/jest": "^24.0.9" },
-        { "@types/enzyme-adapter-react-16": "^1.0.5" },
-        { "react-test-renderer": "^16.8.6" },
         { jest: "^24.1.0" },
-        { enzyme: "^3.10.0" },
-        { "enzyme-adapter-react-16": "^1.10.0" },
         { "ts-jest": "^24.0.0" }
       );
+      if (this.answers.type === "tsx") {
+        package.devDependencies.push(
+          { "@types/enzyme": "^3.10.3" },
+          { enzyme: "^3.10.0" },
+          { "@types/enzyme-adapter-react-16": "^1.0.5" },
+          { "react-test-renderer": "^16.8.6" },
+          { "enzyme-adapter-react-16": "^1.10.0" }
+        );
+      }
     } else {
       package.scripts.push({
         test: 'echo \\"Warn: No test specified\\" && exit 0"'
@@ -286,6 +306,10 @@ module.exports = {
         templateDir: "templates",
         filters: {
           "__tests__/**": "tests",
+          "__tests__/index_spec_ts": `type=="ts"`,
+          "__tests__/index_spec_tsx": `type=="tsx"`,
+          "src/index_ts": `type=="ts"`,
+          "src/index_tsx": `type=="tsx"`,
           jest_config_js: "tests",
           travis_yml: "travis",
           releaserc: "semanticrelease"
@@ -297,7 +321,9 @@ module.exports = {
       type: "move",
       patterns: {
         "src/index_tsx": "src/index.tsx",
+        "src/index_ts": "src/index.ts",
         "__tests__/index_spec_tsx": "__tests__/index.spec.tsx",
+        "__tests__/index_spec_ts": "__tests__/index.spec.ts",
         gitignore: ".gitignore",
         babelrc: ".babelrc",
         travis_yml: ".travis.yml",
