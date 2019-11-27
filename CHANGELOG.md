@@ -1,3 +1,16 @@
+# [4.0.0](https://github.com/epranka/create-package/compare/v3.7.0...v4.0.0) (2019-11-27)
+
+
+### Features
+
+* changed package name ([ae0656c](https://github.com/epranka/create-package/commit/ae0656c0759dfd7704f40d688073bd51308c07f6))
+* semantical release setup ([dad4f6d](https://github.com/epranka/create-package/commit/dad4f6dee9f9779ea5e9a5b7a1b73e4f7b915b1d))
+
+
+### BREAKING CHANGES
+
+* Changed package name and installation
+
 # [3.7.0](https://github.com/epranka/create-tsx-package/compare/v3.6.7...v3.7.0) (2019-11-27)
 
 

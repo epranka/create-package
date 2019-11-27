@@ -1,7 +1,7 @@
 {
   "name": "@epranka/create-package",
   "description": "Ultimate starter kit for JS, JSX, TS, TSX module",
-  "version": "0.0.0-semantically-released",
+  "version": "4.0.0",
   "dependencies": {
     "cac": "^6.5.3",
     "chalk": "^3.0.0",
