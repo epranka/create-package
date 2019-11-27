@@ -1,3 +1,10 @@
+# [4.2.0](https://github.com/epranka/create-package/compare/v4.1.0...v4.2.0) (2019-11-27)
+
+
+### Features
+
+* support jsx ([c302262](https://github.com/epranka/create-package/commit/c302262a9942426de27e6743fc007857a3ca4fa5))
+
 # [4.1.0](https://github.com/epranka/create-package/compare/v4.0.1...v4.1.0) (2019-11-27)
 
 
