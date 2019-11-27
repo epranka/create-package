@@ -14,6 +14,8 @@ const prompts = require("./prompts");
 module.exports = {
   prompts: prompts,
   templateData() {
+    console.log(this.answers);
+
     const { cliOptions } = this.sao.opts;
     const author = this.answers.author;
     const email = this.answers.email;
@@ -174,6 +176,8 @@ module.exports = {
       );
       package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
       babelrc.presets.push("@babel/preset-react");
+    } else if (this.answers.type === "js") {
+      rollupConfig.input = "./src/index.js";
     }
 
     if (this.answers.license === "mit") {
@@ -366,13 +370,15 @@ module.exports = {
           "__tests__/**": "tests",
           "__tests__/index_spec_ts": `type=="ts"`,
           "__tests__/index_spec_tsx": `type=="tsx"`,
+          "__tests__/index_spec_js": `type=="js"`,
           "__tests__/index_spec_jsx": `type=="jsx"`,
           "src/index_ts": `type=="ts"`,
           "src/index_tsx": `type=="tsx"`,
+          "src/index_js": `type=="js"`,
           "src/index_jsx": `type=="jsx"`,
           _tsconfig_json: `type=="tsx" || type=="ts"`,
           _tslint_json: `type=="tsx" || type=="ts"`,
-          _eslint_json: `type="jsx" || type=="js"`,
+          _eslint_json: `type=="jsx" || type=="js"`,
           jest_config_js: "tests",
           travis_yml: "travis",
           releaserc: "semanticrelease"
@@ -385,9 +391,11 @@ module.exports = {
       patterns: {
         "src/index_tsx": "src/index.tsx",
         "src/index_ts": "src/index.ts",
+        "src/index_js": "src/index.js",
         "src/index_jsx": "src/index.jsx",
         "__tests__/index_spec_tsx": "__tests__/index.spec.tsx",
         "__tests__/index_spec_ts": "__tests__/index.spec.ts",
+        "__tests__/index_spec_js": "__tests__/index.spec.js",
         "__tests__/index_spec_jsx": "__tests__/index.spec.jsx",
         gitignore: ".gitignore",
         babelrc: ".babelrc",
