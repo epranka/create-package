@@ -7,7 +7,7 @@ Starter kit for React Typescript module
 - Interactive package creation
 - Silent mode
 - Package manager selection (yarn or npm)
-- Choices of ES, CJS, UMD modules and all togther
+- Choices of ES, CJS, UMD modules and all together
 - Rollup bundler
 - Tests
 - Semantic Release
