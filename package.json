@@ -6,19 +6,20 @@
     "cac": "^6.5.3",
     "chalk": "^3.0.0",
     "envinfo": "^7.4.0",
+    "git-url-parse": "^11.1.2",
+    "js-beautify": "^1.10.2",
     "sao": "^1.7.0",
     "superb": "^4.0.0",
-    "validate-npm-package-name": "^3.0.0",
-    "js-beautify": "^1.10.2"
+    "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
-    "semantic-release": "^15.13.31",
     "@semantic-release/changelog": "^3.0.6",
     "@semantic-release/commit-analyzer": "^6.3.3",
     "@semantic-release/git": "^7.0.18",
     "@semantic-release/npm": "^5.3.4",
     "@semantic-release/release-notes-generator": "^7.3.4",
-    "cz-conventional-changelog": "^3.0.2"
+    "cz-conventional-changelog": "^3.0.2",
+    "semantic-release": "^15.13.31"
   },
   "bin": "./cli.js",
   "scripts": {

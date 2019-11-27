@@ -135,14 +135,6 @@ module.exports = {
       });
     }
 
-    const readmeContent = createREADME({
-      name: package.name,
-      description: package.description,
-      author,
-      email,
-      licenseContent
-    });
-
     if (this.answers.umd) {
       if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
         console.error(
@@ -248,6 +240,21 @@ module.exports = {
     }
 
     const pmRun = this.answers.pm === "yarn" ? "yarn" : "npm run";
+
+    const readmeContent = createREADME({
+      name: package.name,
+      description: package.description,
+      author,
+      email,
+      license: package.license,
+      licenseContent,
+      repository: this.answers.repository,
+      travis: this.answers.travis,
+      semanticrelease: this.answers.semanticrelease,
+      umd: this.answers.umd,
+      umd_name: this.answers.umd_name,
+      es: this.answers.es
+    });
 
     return {
       tsconfig: serializeTSConfig(tsconfig),

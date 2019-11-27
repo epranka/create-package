@@ -18,7 +18,10 @@ const umdName = options.umd;
 const esBuild = options.es;
 const useTravis = options.travis;
 const useTests = options.tests;
-const useSemanticRelease = options["semantic-release"];
+let useSemanticRelease = options["semantic-release"];
+if (options.semanticRelease === false) {
+  useSemanticRelease = false;
+}
 const useNPM = options["npm"];
 
 module.exports = [
