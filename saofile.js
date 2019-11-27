@@ -14,8 +14,6 @@ const prompts = require("./prompts");
 module.exports = {
   prompts: prompts,
   templateData() {
-    console.log(this.answers);
-
     const { cliOptions } = this.sao.opts;
     const author = this.answers.author;
     const email = this.answers.email;
@@ -75,7 +73,7 @@ module.exports = {
         { "@babel/preset-env": "^7.3.4" },
         { lodash: "^4.17.15" },
         { rollup: "^1.27.5" },
-        { "rollup-plugin-babel-minify": "^9.1.1" },
+        { "rollup-plugin-terser": "^5.1.2" },
         { "rollup-plugin-cleanup": "^3.1.1" },
         { "rollup-plugin-commonjs": "^10.1.0" },
         { "rollup-plugin-delete": "^1.1.0" },
@@ -125,7 +123,7 @@ module.exports = {
           : isReact
           ? `babel({exclude: "node_modules/**"})`
           : null,
-        `minify()`,
+        `terser()`,
         `cleanup()`
       ],
       external: [
