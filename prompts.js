@@ -46,10 +46,14 @@ module.exports = [
       {
         name: "React Typescript (TSX)",
         value: "tsx"
+      },
+      {
+        name: "React Javascript (JSX)",
+        value: "jsx"
       }
     ],
     type: "list",
-    default: "ts"
+    default: "jsx"
   },
   {
     name: "author",

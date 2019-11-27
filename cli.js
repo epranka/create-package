@@ -51,7 +51,7 @@ cli
     }
     console.log();
     console.log(chalk`{cyan @epranka/create-package v${version}}`);
-    console.log(chalk`✨ Generating TSX package in {cyan ${outDir}}`);
+    console.log(chalk`✨ Generating package in {cyan ${outDir}}`);
 
     const { verbose, silent } = cliOptions;
     const logLevel = verbose ? 4 : 2;

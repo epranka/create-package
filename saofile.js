@@ -3,10 +3,12 @@ const validate = require("validate-npm-package-name");
 const serializePackage = require("./utils/serializePackage");
 const serializeTSConfig = require("./utils/serializeTSConfig");
 const serializeRollupConfig = require("./utils/serializeRollupConfig");
+const serializeBabelRC = require("./utils/serializeBabelRC");
 const createREADME = require("./utils/createREADME");
 const createMITLicense = require("./utils/createMITLicense");
 const createISCLicense = require("./utils/createISCLicense");
 const createUNLICENSEDLicense = require("./utils/createUNLICENSEDLicense");
+const createJestConfig = require("./utils/createJestConfig");
 const prompts = require("./prompts");
 
 module.exports = {
@@ -16,6 +18,9 @@ module.exports = {
     const author = this.answers.author;
     const email = this.answers.email;
     const year = new Date().getFullYear();
+    const isTypescript =
+      this.answers.type === "tsx" || this.answers.type === "ts";
+    const isReact = this.answers.type === "tsx" || this.answers.type === "jsx";
 
     let licenseContent = createISCLicense({ year, author, email });
 
@@ -49,7 +54,7 @@ module.exports = {
       version: "0.0.1",
       main: "lib/index.js",
       module: undefined,
-      types: "lib/index.d.ts",
+      types: undefined,
       files: ["lib"],
       publishConfig: { access: "public" },
       keywords: [],
@@ -65,22 +70,25 @@ module.exports = {
         { "@babel/plugin-proposal-class-properties": "^7.3.4" },
         { "@babel/plugin-proposal-decorators": "^7.4.4" },
         { "@babel/plugin-proposal-object-rest-spread": "^7.3.4" },
-        { "@babel/plugin-transform-typescript": "^7.3.2" },
         { "@babel/preset-env": "^7.3.4" },
-        { "@babel/preset-typescript": "^7.3.3" },
         { lodash: "^4.17.15" },
-        { tslint: "^5.13.0" },
-        { "tslint-config-prettier": "^1.18.0" },
-        { typescript: "^3.3.3333" },
         { rollup: "^1.27.5" },
         { "rollup-plugin-babel-minify": "^9.1.1" },
         { "rollup-plugin-cleanup": "^3.1.1" },
         { "rollup-plugin-commonjs": "^10.1.0" },
         { "rollup-plugin-delete": "^1.1.0" },
-        { "rollup-plugin-progress": "^1.1.1" },
-        { "rollup-plugin-typescript2": "^0.25.2" }
+        { "rollup-plugin-progress": "^1.1.1" }
       ],
       peerDependencies: []
+    };
+
+    const babelrc = {
+      presets: ["@babel/env"],
+      plugins: [
+        ["@babel/plugin-proposal-decorators", { legacy: true }],
+        "@babel/proposal-class-properties",
+        "@babel/proposal-object-rest-spread"
+      ]
     };
 
     const authorObject = [];
@@ -94,7 +102,7 @@ module.exports = {
     }
 
     const rollupConfig = {
-      input: undefined, //"./src/index.tsx",
+      input: undefined,
       output: [],
       plugins: [
         `progress({clearLines: false})`,
@@ -104,13 +112,17 @@ module.exports = {
         `commonjs({
           namedExports: {}
         })`,
-        this.answers.tests
-          ? `typescript({
+        isTypescript
+          ? this.answers.tests
+            ? `typescript({
           tsconfigOverride: {
             exclude: ["./__tests__"]
           }
         })`
-          : `typescript()`,
+            : `typescript()`
+          : isReact
+          ? `babel({exclude: "node_modules/**"})`
+          : null,
         `minify()`,
         `cleanup()`
       ],
@@ -121,6 +133,21 @@ module.exports = {
     };
     if (cliOptions.private) {
       package.private = true;
+    }
+
+    if (isTypescript) {
+      package.devDependencies.push(
+        { "@babel/plugin-transform-typescript": "^7.3.2" },
+        { "@babel/preset-typescript": "^7.3.3" },
+        { tslint: "^5.13.0" },
+        { typescript: "^3.3.3333" },
+        { "rollup-plugin-typescript2": "^0.25.2" }
+      );
+      package.types = "lib/index.d.ts";
+      babelrc.presets.unshift("@babel/typescript");
+      babelrc.plugins.push("@babel/plugin-transform-typescript");
+    } else {
+      package.devDependencies.push({ eslint: "^6.7.1" });
     }
 
     if (this.answers.type === "tsx") {
@@ -137,6 +164,16 @@ module.exports = {
       package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
     } else if (this.answers.type === "ts") {
       rollupConfig.input = "./src/index.ts";
+    } else if (this.answers.type === "jsx") {
+      rollupConfig.input = "./src/index.jsx";
+      package.devDependencies.push(
+        { "@babel/preset-react": "^7.7.4" },
+        { "rollup-plugin-babel": "^4.3.3" },
+        { react: "*" },
+        { "react-dom": "*" }
+      );
+      package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
+      babelrc.presets.push("@babel/preset-react");
     }
 
     if (this.answers.license === "mit") {
@@ -164,7 +201,11 @@ module.exports = {
         format: "umd",
         name: "${this.answers.umd_name}",
         globals: {
-          ${this.answers.type === "tsx" ? `react: "React"` : ""}
+          ${
+            this.answers.type === "tsx" || this.answers.type === "jsx"
+              ? `react: "React"`
+              : ""
+          }
         }
       }`;
       rollupConfig.output.push(umdOutput);
@@ -188,16 +229,27 @@ module.exports = {
     if (this.answers.tests) {
       tsconfig.includes.push("./__tests__");
       package.scripts.push({ test: "jest" });
-      package.devDependencies.push(
-        { "@types/jest": "^24.0.9" },
-        { jest: "^24.1.0" },
-        { "ts-jest": "^24.0.0" }
-      );
+      package.devDependencies.push({ jest: "^24.1.0" });
+      if (this.answers.type === "ts") {
+        package.devDependencies.push(
+          { "@types/jest": "^24.0.9" },
+          { "ts-jest": "^24.0.0" }
+        );
+      }
       if (this.answers.type === "tsx") {
         package.devDependencies.push(
+          { "@types/jest": "^24.0.9" },
+          { "ts-jest": "^24.0.0" },
           { "@types/enzyme": "^3.10.3" },
           { enzyme: "^3.10.0" },
           { "@types/enzyme-adapter-react-16": "^1.0.5" },
+          { "react-test-renderer": "^16.8.6" },
+          { "enzyme-adapter-react-16": "^1.10.0" }
+        );
+      }
+      if (this.answers.type === "jsx") {
+        package.devDependencies.push(
+          { enzyme: "^3.10.0" },
           { "react-test-renderer": "^16.8.6" },
           { "enzyme-adapter-react-16": "^1.10.0" }
         );
@@ -273,13 +325,19 @@ module.exports = {
       semanticrelease: this.answers.semanticrelease,
       umd: this.answers.umd,
       umd_name: this.answers.umd_name,
-      es: this.answers.es
+      es: this.answers.es,
+      type: this.answers.type
     });
 
     return {
       tsconfig: serializeTSConfig(tsconfig),
       package: serializePackage(package),
-      rollupConfig: serializeRollupConfig(rollupConfig),
+      rollupConfig: serializeRollupConfig(rollupConfig, {
+        isTypescript,
+        isReact
+      }),
+      jestContent: createJestConfig({ isTypescript }),
+      babelrc: serializeBabelRC(babelrc),
       licenseContent,
       readmeContent,
       pmRun
@@ -308,8 +366,13 @@ module.exports = {
           "__tests__/**": "tests",
           "__tests__/index_spec_ts": `type=="ts"`,
           "__tests__/index_spec_tsx": `type=="tsx"`,
+          "__tests__/index_spec_jsx": `type=="jsx"`,
           "src/index_ts": `type=="ts"`,
           "src/index_tsx": `type=="tsx"`,
+          "src/index_jsx": `type=="jsx"`,
+          _tsconfig_json: `type=="tsx" || type=="ts"`,
+          _tslint_json: `type=="tsx" || type=="ts"`,
+          _eslint_json: `type="jsx" || type=="js"`,
           jest_config_js: "tests",
           travis_yml: "travis",
           releaserc: "semanticrelease"
@@ -322,8 +385,10 @@ module.exports = {
       patterns: {
         "src/index_tsx": "src/index.tsx",
         "src/index_ts": "src/index.ts",
+        "src/index_jsx": "src/index.jsx",
         "__tests__/index_spec_tsx": "__tests__/index.spec.tsx",
         "__tests__/index_spec_ts": "__tests__/index.spec.ts",
+        "__tests__/index_spec_jsx": "__tests__/index.spec.jsx",
         gitignore: ".gitignore",
         babelrc: ".babelrc",
         travis_yml: ".travis.yml",
@@ -333,7 +398,8 @@ module.exports = {
         README_md: "README.md",
         _package_json: "package.json",
         _tsconfig_json: "tsconfig.json",
-        _tslint_json: "tslint.json"
+        _tslint_json: "tslint.json",
+        _eslint_json: ".eslintrc"
       }
     });
 
