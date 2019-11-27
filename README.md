@@ -2,6 +2,8 @@
 
 <h3 align="center">Ultimate starter kit for JS, JSX, TS, TSX module</h3>
 
+<h2 align="center" style="color:red">Important: currently supports only TSX</h2>
+
 <p align="center">
         <a href="./LICENSE">
     <img alt="license" src="https://img.shields.io/badge/license-ISC-blue.svg" />
