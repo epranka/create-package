@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/epranka/create-package/compare/v4.0.1...v4.1.0) (2019-11-27)
+
+
+### Features
+
+* added ts-support ([d79f8e4](https://github.com/epranka/create-package/commit/d79f8e44ab667340fa5dc7788e99b6f62a09ee16))
+
 ## [4.0.1](https://github.com/epranka/create-package/compare/v4.0.0...v4.0.1) (2019-11-27)
 
 
