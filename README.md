@@ -1,18 +1,20 @@
-<h1 align="center" style="border-bottom: none;">⚒️ @epranka/create-tsx-package</h1>
+<h1 align="center" style="border-bottom: none;">⚒️ @epranka/create-package</h1>
 
-<h3 align="center">Starter kit for React Typescript module</h3>
+<h3 align="center">Ultimate starter kit for JS, JSX, TS, TSX module</h3>
+
+<h2 align="center" style="color:red">Important: currently supports only TSX</h2>
 
 <p align="center">
         <a href="./LICENSE">
     <img alt="license" src="https://img.shields.io/badge/license-ISC-blue.svg" />
   </a>
-   <a href="https://www.npmjs.com/package/@epranka/create-tsx-package">
-    <img alt="npm version" src="https://img.shields.io/npm/v/@epranka/create-tsx-package.svg?style=flat" />
-  </a> <a href="https://www.npmjs.com/package/@epranka/create-tsx-package">
-    <img alt="npm downloads" src="https://img.shields.io/npm/dt/@epranka/create-tsx-package.svg?style=flat" />
-  </a> <a href="https://travis-ci.org/epranka/create-tsx-package">
-      <img alt="build status" src="https://travis-ci.org/epranka/create-tsx-package.svg?branch=master" />
-    </a> <a href="https://travis-ci.org/epranka/create-tsx-package">
+   <a href="https://www.npmjs.com/package/@epranka/create-package">
+    <img alt="npm version" src="https://img.shields.io/npm/v/@epranka/create-package.svg?style=flat" />
+  </a> <a href="https://www.npmjs.com/package/@epranka/create-package">
+    <img alt="npm downloads" src="https://img.shields.io/npm/dt/@epranka/create-package.svg?style=flat" />
+  </a> <a href="https://travis-ci.org/epranka/create-package">
+      <img alt="build status" src="https://travis-ci.org/epranka/create-package.svg?branch=master" />
+    </a> <a href="https://travis-ci.org/epranka/create-package">
       <img alt="ci travis" src="https://img.shields.io/badge/ci-travis-yellow" />
     </a> <a href="https://github.com/semantic-release/semantic-release">
       <img alt="semantic release" src="https://img.shields.io/badge/%E2%9C%A8-semantic--release-e10079" />
@@ -22,6 +24,7 @@
 ## Features
 
 - Interactive package creation
+- Choices of JS, JSX, TS, TSX
 - Silent mode
 - Package manager selection (yarn or npm)
 - Choices of ES, CJS, UMD modules and all together
@@ -37,25 +40,25 @@
 1. With package runners
 
 ```bash
-$ npx @epranka/create-tsx-package my-package
+$ npx @epranka/create-package my-package
 
 # or
 
-$ yarn create @epranka/tsx-package my-package
+$ yarn create @epranka/package my-package
 ```
 
 2. Install globally
 
 ```bash
-$ npm install -g @epranka/create-tsx-package
+$ npm install -g @epranka/create-package
 
 # or
 
-$ yarn global add @epranka/create-tsx-package
+$ yarn global add @epranka/create-package
 
 # and then use
 
-$ create-tsx-package my-package
+$ create-package my-package
 
 ```
 
@@ -65,13 +68,13 @@ If automated semantic releases are selected, package generation will take longer
 
 ```
 Usage:
-  $ create-tsx-package [out-dir]
+  $ create-package [out-dir]
 
 Commands:
   [out-dir]  Generate in a <out-dir> or current directory
 
 For more info, run any command with the `--help` flag:
-  $ create-tsx-package --help
+  $ create-package --help
 
 Options:
   -i, --info             Print out debugging information relating to the local environment
@@ -138,23 +141,23 @@ my-package
 
 ## Badge
 
-Let people know that your package is generated using **@epranka/create-tsx-package** by including this badge in your readme
+Let people know that your package is generated using **@epranka/create-package** by including this badge in your readme
 
-<a href="https://github.com/epranka/create-tsx-package">
-  <img alt="generated with" src="https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--tsx--package-blue" />
+<a href="https://github.com/epranka/create-package">
+  <img alt="generated with" src="https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--package-blue" />
 </a>
 
 Using Markdown
 
 ```
-[![generated with @epranka/create-tsx-package](https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--tsx--package-blue)](https://github.com/epranka/create-tsx-package)
+[![generated with @epranka/create-package](https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--package-blue)](https://github.com/epranka/create-package)
 ```
 
 Using HTML
 
 ```
-<a href="https://github.com/epranka/create-tsx-package">
-  <img alt="generated with" src="https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--tsx--package-blue" />
+<a href="https://github.com/epranka/create-package">
+  <img alt="generated with" src="https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--package-blue" />
 </a>
 ```
 

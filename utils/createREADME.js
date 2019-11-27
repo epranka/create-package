@@ -58,8 +58,8 @@ const createBadges = ({
     </a>`;
     badges.push(semanticReleaseBadge);
   }
-  const generatedWith = `<a href="https://github.com/epranka/create-tsx-package">
-    <img alt="generated with" src="https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--tsx--package-blue" />
+  const generatedWith = `<a href="https://github.com/epranka/create-package">
+    <img alt="generated with" src="https://img.shields.io/badge/generated%20with-%40epranka%2Fcreate--package-blue" />
   </a>`;
   badges.push(generatedWith);
   if (badges.length) {
