@@ -33,7 +33,23 @@ module.exports = [
   {
     name: "description",
     message: "Package description",
-    default: description ? description : `My ${random()} TSX package`
+    default: description ? description : `My ${random()} package`
+  },
+  {
+    name: "type",
+    message: "Package type",
+    choices: [
+      {
+        name: "Typescript (TS)",
+        value: "ts"
+      },
+      {
+        name: "React Typescript (TSX)",
+        value: "tsx"
+      }
+    ],
+    type: "list",
+    default: "ts"
   },
   {
     name: "author",
