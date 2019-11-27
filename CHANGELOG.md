@@ -1,3 +1,15 @@
+# [3.7.0](https://github.com/epranka/create-tsx-package/compare/v3.6.7...v3.7.0) (2019-11-27)
+
+
+### Bug Fixes
+
+* **package.json:** moved some dependencies to dev and added license field ([3af14ce](https://github.com/epranka/create-tsx-package/commit/3af14cee393239e9d49e47213f86fcb58f3efae2)), closes [#27](https://github.com/epranka/create-tsx-package/issues/27)
+
+
+### Features
+
+* **readme:** added badge to generated readme ([7ec2427](https://github.com/epranka/create-tsx-package/commit/7ec2427dc38e123540deeb175eede7beb336dcf1)), closes [#22](https://github.com/epranka/create-tsx-package/issues/22)
+
 ## [3.6.7](https://github.com/epranka/create-tsx-package/compare/v3.6.6...v3.6.7) (2019-11-26)
 
 ## [3.6.6](https://github.com/epranka/create-tsx-package/compare/v3.6.5...v3.6.6) (2019-11-26)
