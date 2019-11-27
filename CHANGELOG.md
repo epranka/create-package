@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/epranka/create-package/compare/v4.0.0...v4.0.1) (2019-11-27)
+
+
+### Bug Fixes
+
+* **package:** changed publish access to public ([814c87f](https://github.com/epranka/create-package/commit/814c87f1af420746784a005ed8f2ba4faa1e99de))
+
 # [4.0.0](https://github.com/epranka/create-package/compare/v3.7.0...v4.0.0) (2019-11-27)
 
 
