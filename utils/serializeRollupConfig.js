@@ -10,7 +10,7 @@ const serializeRollupConfig = (rollupConfig, { isTypescript, isReact }) => {
   };
     import commonjs from "rollup-plugin-commonjs";
     import progress from "rollup-plugin-progress";
-    import minify from "rollup-plugin-babel-minify";
+    import {terser} from "rollup-plugin-terser";
     import cleanup from "rollup-plugin-cleanup";
     import del from "rollup-plugin-delete";
     import pkg from "./package.json";
