@@ -48,12 +48,16 @@ module.exports = [
         value: "tsx"
       },
       {
+        name: "Javascript (JS)",
+        value: "js"
+      },
+      {
         name: "React Javascript (JSX)",
         value: "jsx"
       }
     ],
     type: "list",
-    default: "jsx"
+    default: "ts"
   },
   {
     name: "author",
