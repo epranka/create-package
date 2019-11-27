@@ -53,7 +53,7 @@ module.exports = {
       files: ["lib"],
       publishConfig: { access: "public" },
       keywords: [],
-      author: "",
+      author: undefined,
       contributors: [],
       repository: "",
       license: "ISC",
@@ -88,6 +88,16 @@ module.exports = {
       ],
       peerDependencies: [{ react: "*" }, { "react-dom": "*" }]
     };
+
+    const authorObject = [];
+    if (author) {
+      authorObject.push(author);
+      if (email) authorObject.push(`<${email}>`);
+    }
+    if (authorObject.length) {
+      package.author = authorObject.join(" ");
+      package.contributors.push(authorObject.join(" "));
+    }
 
     const rollupConfig = {
       input: "./src/index.tsx",
