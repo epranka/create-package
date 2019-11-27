@@ -1,3 +1,10 @@
+# [4.3.0](https://github.com/epranka/create-package/compare/v4.2.0...v4.3.0) (2019-11-27)
+
+
+### Features
+
+* support js ([64dc6ad](https://github.com/epranka/create-package/commit/64dc6ad5a57b1944e5bd6eb77396995830a3a229))
+
 # [4.2.0](https://github.com/epranka/create-package/compare/v4.1.0...v4.2.0) (2019-11-27)
 
 
