@@ -1,7 +1,7 @@
 {
   "name": "@epranka/create-package",
   "description": "Ultimate starter kit for JS, JSX, TS, TSX module",
-  "version": "3.7.0",
+  "version": "0.0.0-semantically-released",
   "dependencies": {
     "cac": "^6.5.3",
     "chalk": "^3.0.0",
@@ -31,7 +31,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/epranka/create-package.git"
+    "url": "https://github.com/epranka/create-package.git"
   },
   "keywords": [
     "javascript",
