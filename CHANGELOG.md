@@ -1,3 +1,12 @@
+## [4.4.1](https://github.com/epranka/create-package/compare/v4.4.0...v4.4.1) (2019-11-28)
+
+
+### Bug Fixes
+
+* bug fixed ([72848db](https://github.com/epranka/create-package/commit/72848db058b4aa62e8d4cca6ade3c8a1b38944b8))
+* fixed travis foldings ([6e22fa4](https://github.com/epranka/create-package/commit/6e22fa4ff37cc15a3f6d33436ad9f3293ed1f8bd))
+* **tests:** fixed ([92dad5b](https://github.com/epranka/create-package/commit/92dad5bac81c8b091c420a6451fcb7bc02296cbf))
+
 # [4.4.0](https://github.com/epranka/create-package/compare/v4.3.2...v4.4.0) (2019-11-28)
 
 
