@@ -2,12 +2,18 @@
 const spawn = require("cross-spawn");
 const ora = require("ora");
 
-const foldStart = packagePath => {
-  console.log("travis_fold:start:" + packagePath);
+const isTravis = "TRAVIS" in process.env && "CI" in process.env;
+
+const foldStart = type => {
+  if (isTravis) {
+    console.log("travis_fold:start:" + type);
+  }
 };
 
-const foldEnd = packagePath => {
-  console.log("travis_fold:end:" + packagePath);
+const foldEnd = type => {
+  if (isTravis) {
+    console.log("travis_fold:end:" + type);
+  }
 };
 
 const spawnProcess = (message, command, args, options) => {
@@ -111,13 +117,12 @@ const startTest = async () => {
     await removeTmpDirectory();
     const packageTypes = ["js", "jsx", "ts", "tsx"];
     for (const type of packageTypes) {
-      const packagePath = getPackagePath(type);
-      foldStart(packagePath);
+      foldStart(type);
       await createPackage(type);
       await lintPackage(type);
       await buildPackage(type);
       await testPackage(type);
-      foldEnd(packagePath);
+      foldEnd(type);
     }
     await removeTmpDirectory();
     console.log("✓ Test successfully passed");
