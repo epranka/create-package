@@ -22,11 +22,16 @@ const useTests = !!options.tests;
 const useNPM = !!options.npm;
 const type = options.type || "ts";
 
+const required = message => value => {
+  return value && value.trim() ? true : message;
+};
+
 module.exports = [
   {
     name: "name",
     message: "Package name",
-    default: name ? name : "{outFolder}"
+    default: name ? name : "{outFolder}",
+    validate: required("Package name is required")
   },
   {
     name: "description",
@@ -108,6 +113,9 @@ module.exports = [
     message:
       "What is a global name of your package in browser (e.g. React, ReactDOM) ?",
     default: umdName,
+    validate: required(
+      "If you want to build UMD module, the global name of the package is required"
+    ),
     when: answers => {
       if (answers["useUMD"]) return true;
       return false;
@@ -140,6 +148,13 @@ module.exports = [
   {
     name: "repository",
     message: "Repository URL",
+    validate: (value, answers) => {
+      if (answers["useSemanticRelease"] || answers["useTravis"]) {
+        return required(
+          "If you want to use semantic releases or travis ci, the repository URL is required"
+        )(value);
+      } else return true;
+    },
     default: getRepositoryURL()
   }
 ];
