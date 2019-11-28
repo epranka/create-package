@@ -1,94 +1,100 @@
 const spawn = require("cross-spawn");
 const validate = require("validate-npm-package-name");
 const serializePackage = require("./utils/serializePackage");
-const serializeTSConfig = require("./utils/serializeTSConfig");
-const serializeRollupConfig = require("./utils/serializeRollupConfig");
-const serializeBabelRC = require("./utils/serializeBabelRC");
+const createRollupConfig = require("./utils/createRollupConfig");
+const createTsConfig = require("./utils/createTsConfig");
+const createEsLintConfig = require("./utils/createEsLintConfig");
+const createTsLintConfig = require("./utils/createTsLintConfig");
 const createREADME = require("./utils/createREADME");
-const createMITLicense = require("./utils/createMITLicense");
-const createISCLicense = require("./utils/createISCLicense");
-const createUNLICENSEDLicense = require("./utils/createUNLICENSEDLicense");
+const createLicenseConfig = require("./utils/createLicenseConfig");
 const createJestConfig = require("./utils/createJestConfig");
+const createBabelConfig = require("./utils/createBabelConfig");
+const createSemanticReleaseConfig = require("./utils/createSemanticReleaseConfig");
+const createTravisConfig = require("./utils/createTravisConfig");
 const prompts = require("./prompts");
 
 module.exports = {
   prompts: prompts,
   templateData() {
     const { cliOptions } = this.sao.opts;
+    const name = this.answers.name;
+    const description = this.answers.description;
+    const license = this.answers.license;
+    const type = this.answers.type;
     const author = this.answers.author;
     const email = this.answers.email;
     const year = new Date().getFullYear();
-    const isTypescript =
-      this.answers.type === "tsx" || this.answers.type === "ts";
-    const isReact = this.answers.type === "tsx" || this.answers.type === "jsx";
+    const useEs = this.answers.useEs;
+    const useTests = this.answers.useTests;
+    const useSemanticRelease = this.answers.useSemanticRelease;
+    const useTravis = this.answers.useTravis;
+    const repository = this.answers.repository;
+    const useUMD = this.answers.useUMD;
+    const umdName = this.answers.umdName;
+    const pm = this.answers.pm;
+    const isTypescript = type === "tsx" || type === "ts";
+    const isReact = type === "tsx" || type === "jsx";
 
-    let licenseContent = createISCLicense({ year, author, email });
+    if (!["ts", "tsx", "js", "jsx"].includes(type)) {
+      console.error(
+        this
+          .chalk`{red No type ${type} is supported. Supported: js, jsx, ts, tsx}`
+      );
+      process.exit(1);
+    }
 
-    const tsconfig = {
-      compilerOptions: {
-        outDir: "./lib",
-        target: "esnext",
-        moduleResolution: "node",
-        module: "esnext",
-        jsx: undefined,
-        skipLibCheck: true,
-        lib: ["dom", "es6"],
-        experimentalDecorators: true,
-        declaration: true,
-        sourceMap: true,
-        removeComments: true,
-        noImplicitAny: false,
-        noImplicitThis: true,
-        noImplicitReturns: true,
-        noFallthroughCasesInSwitch: true,
-        esModuleInterop: true,
-        allowSyntheticDefaultImports: true
-      },
-      exclude: ["node_modules"],
-      includes: ["./src"]
-    };
+    if (useUMD) {
+      if (!umdName || !umdName.trim()) {
+        console.error(
+          this
+            .chalk`{red No global UMD name defined while UMD module build is enabled}`
+        );
+        process.exit(1);
+      }
+    }
+
+    if (useSemanticRelease) {
+      if (!repository || !repository.trim()) {
+        console.error(
+          this
+            .chalk`{red No repository url defined while semantic release is enabled}`
+        );
+        process.exit(1);
+      }
+    }
+
+    if (useTravis) {
+      if (!repository || !repository.trim()) {
+        console.error(
+          this.chalk`{red No repository url defined while travis ci is enabled}`
+        );
+        process.exit(1);
+      }
+    }
+
     const package = {
-      name: this.answers.name,
-      description: this.answers.description,
-      private: undefined,
+      name: name,
+      description: description,
       version: "0.0.1",
+      private: cliOptions.private ? true : undefined,
+      scripts: [{ build: "rollup -c" }, { watch: "rollup -cw" }],
       main: "lib/index.js",
-      module: undefined,
-      types: undefined,
+      module: useEs ? "lib/index.es.js" : undefined,
+      types: isTypescript ? "lib/index.d.ts" : undefined,
       files: ["lib"],
       publishConfig: { access: "public" },
       keywords: [],
       author: undefined,
       contributors: [],
-      repository: "",
+      repository: repository
+        ? {
+            url: repository
+          }
+        : undefined,
       license: "ISC",
-      scripts: [{ build: "rollup -c" }, { watch: "rollup -cw" }],
       dependencies: [],
-      devDependencies: [
-        { "@babel/cli": "^7.2.3" },
-        { "@babel/core": "^7.3.4" },
-        { "@babel/plugin-proposal-class-properties": "^7.3.4" },
-        { "@babel/plugin-proposal-decorators": "^7.4.4" },
-        { "@babel/plugin-proposal-object-rest-spread": "^7.3.4" },
-        { "@babel/preset-env": "^7.3.4" },
-        { lodash: "^4.17.15" },
-        { rollup: "^1.27.5" },
-        { "rollup-plugin-terser": "^5.1.2" },
-        { "rollup-plugin-cleanup": "^3.1.1" },
-        { "rollup-plugin-commonjs": "^10.1.0" },
-        { "rollup-plugin-delete": "^1.1.0" },
-        { "rollup-plugin-progress": "^1.1.1" }
-      ],
+      devDependencies: [],
       peerDependencies: []
-    };
-
-    const babelrc = {
-      presets: ["@babel/env"],
-      plugins: [
-        ["@babel/plugin-proposal-decorators", { legacy: true }],
-        "@babel/proposal-class-properties",
-        "@babel/proposal-object-rest-spread"
-      ]
     };
 
     const authorObject = [];
@@ -101,160 +107,30 @@ module.exports = {
       package.contributors.push(authorObject.join(" "));
     }
 
-    const rollupConfig = {
-      input: undefined,
-      output: [],
-      plugins: [
-        `progress({clearLines: false})`,
-        `del({targets: [
-          "lib/*"
-        ]})`,
-        `commonjs({
-          namedExports: {}
-        })`,
-        isTypescript
-          ? this.answers.tests
-            ? `typescript({
-          tsconfigOverride: {
-            exclude: ["./__tests__"]
-          }
-        })`
-            : `typescript()`
-          : isReact
-          ? `babel({exclude: "node_modules/**"})`
-          : null,
-        `terser()`,
-        `cleanup()`
-      ],
-      external: [
-        "...Object.keys(pkg.dependencies || {})",
-        "...Object.keys(pkg.peerDependencies || {})"
-      ]
-    };
-    if (cliOptions.private) {
-      package.private = true;
-    }
-
-    if (isTypescript) {
-      package.devDependencies.push(
-        { "@babel/plugin-transform-typescript": "^7.3.2" },
-        { "@babel/preset-typescript": "^7.3.3" },
-        { tslint: "^5.13.0" },
-        { typescript: "^3.3.3333" },
-        { "rollup-plugin-typescript2": "^0.25.2" }
-      );
-      package.types = "lib/index.d.ts";
-      babelrc.presets.unshift("@babel/typescript");
-      babelrc.plugins.push("@babel/plugin-transform-typescript");
-    } else {
-      package.devDependencies.push({ eslint: "^6.7.1" });
-    }
-
-    if (this.answers.type === "tsx") {
-      tsconfig.compilerOptions.jsx = "react";
-      rollupConfig.input = "./src/index.tsx";
-      package.devDependencies.push(
-        { "@types/hoist-non-react-statics": "^3.3.1" },
-        { "@types/react": "^16.8.5" },
-        { "@types/react-dom": "^16.8.2" },
-        { react: "*" },
-        { "react-dom": "*" },
-        { "tslint-react": "^3.6.0" }
-      );
-      package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
-    } else if (this.answers.type === "ts") {
-      rollupConfig.input = "./src/index.ts";
-    } else if (this.answers.type === "jsx") {
-      rollupConfig.input = "./src/index.jsx";
-      package.devDependencies.push(
-        { "@babel/preset-react": "^7.7.4" },
-        { "rollup-plugin-babel": "^4.3.3" },
-        { react: "*" },
-        { "react-dom": "*" }
-      );
-      package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
-      babelrc.presets.push("@babel/preset-react");
-    } else if (this.answers.type === "js") {
-      rollupConfig.input = "./src/index.js";
-    }
-
-    if (this.answers.license === "mit") {
-      package.license = "MIT";
-      licenseContent = createMITLicense({ year, author, email });
-    } else if (this.answers.license === "unlicensed") {
-      package.license = "UNLICENSED";
-      licenseContent = createUNLICENSEDLicense({
-        year,
-        author,
-        email
-      });
-    }
-
-    if (this.answers.umd) {
-      if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
-        console.error(
-          this
-            .chalk`{red No global UMD name defined while UMD module build is enabled}`
-        );
-        process.exit(1);
-      }
-      const umdOutput = `{
-        file: pkg.main,
-        format: "umd",
-        name: "${this.answers.umd_name}",
-        globals: {
-          ${
-            this.answers.type === "tsx" || this.answers.type === "jsx"
-              ? `react: "React"`
-              : ""
-          }
-        }
-      }`;
-      rollupConfig.output.push(umdOutput);
-    } else {
-      const cjsOutput = `{
-        file: pkg.main,
-        format: "cjs"
-      }`;
-      rollupConfig.output.push(cjsOutput);
-    }
-
-    if (this.answers.es) {
-      package.module = "lib/index.es.js";
-      const esOutput = `{
-        file: pkg.module,
-        format: "es"
-      }`;
-      rollupConfig.output.push(esOutput);
-    }
-
-    if (this.answers.tests) {
-      tsconfig.includes.push("./__tests__");
+    if (useTests) {
       package.scripts.push({ test: "jest" });
-      package.devDependencies.push({ jest: "^24.1.0" });
-      if (this.answers.type === "ts") {
+      package.devDependencies.push({ jest: "^24.9.0" });
+
+      if (isReact) {
         package.devDependencies.push(
-          { "@types/jest": "^24.0.9" },
+          { enzyme: "^3.10.0" },
+          { "react-test-renderer": "^16.8.6" },
+          { "enzyme-adapter-react-16": "^1.10.0" }
+        );
+      }
+
+      if (isTypescript) {
+        package.devDependencies.push(
+          { "@types/jest": "^24.0.23" },
           { "ts-jest": "^24.0.0" }
         );
-      }
-      if (this.answers.type === "tsx") {
-        package.devDependencies.push(
-          { "@types/jest": "^24.0.9" },
-          { "ts-jest": "^24.0.0" },
-          { "@types/enzyme": "^3.10.3" },
-          { enzyme: "^3.10.0" },
-          { "@types/enzyme-adapter-react-16": "^1.0.5" },
-          { "react-test-renderer": "^16.8.6" },
-          { "enzyme-adapter-react-16": "^1.10.0" }
-        );
-      }
-      if (this.answers.type === "jsx") {
-        package.devDependencies.push(
-          { enzyme: "^3.10.0" },
-          { "react-test-renderer": "^16.8.6" },
-          { "enzyme-adapter-react-16": "^1.10.0" }
-        );
+
+        if (isReact) {
+          package.devDependencies.push(
+            { "@types/enzyme": "^3.10.3" },
+            { "@types/enzyme-adapter-react-16": "^1.0.5" }
+          );
+        }
       }
     } else {
       package.scripts.push({
@@ -262,93 +138,104 @@ module.exports = {
       });
     }
 
-    if (this.answers.semanticrelease) {
-      package.version = "0.0.0-semantically-released";
-      package.scripts.push({
-        "semantic-release": "semantic-release"
-      });
-      package.scripts.push({
-        cz: "git-cz"
-      });
-      if (!this.answers.repository || !this.answers.repository.trim()) {
-        console.error(
-          this
-            .chalk`{red No repository url defined while semantic release is enabled}`
+    if (isReact) {
+      package.devDependencies.push({ react: "*" }, { "react-dom": "*" });
+      package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
+    }
+
+    if (isTypescript) {
+      package.devDependencies.push({ typescript: "^3.3.3333" });
+      package.types = "lib/index.d.ts";
+
+      if (isReact) {
+        package.devDependencies.push(
+          { "@types/react": "^16.8.5" },
+          { "@types/react-dom": "^16.8.2" }
         );
-        process.exit(1);
       }
-      package.devDependencies.push({ "semantic-release": "^15.13.31" });
-      package.devDependencies.push({
-        "@semantic-release/changelog": "^3.0.6"
-      });
-      package.devDependencies.push({
-        "@semantic-release/commit-analyzer": "^6.3.3"
-      });
-      package.devDependencies.push({ "@semantic-release/git": "^7.0.18" });
-      package.devDependencies.push({
-        "@semantic-release/release-notes-generator": "^7.3.4"
-      });
-      package.devDependencies.push({
-        "@semantic-release/npm": "^5.3.4"
-      });
-      package.devDependencies.push({ commitizen: "^4.0.3" });
     }
 
-    if (this.answers.travis) {
-      if (!this.answers.repository || !this.answers.repository.trim()) {
-        console.error(
-          this.chalk`{red No repository url defined while travis ci is enabled}`
-        );
-        process.exit(1);
-      }
-
-      package.scripts.push({
-        "travis-deploy-once": "travis-deploy-once"
-      });
+    let travisConfig;
+    if (useTravis) {
+      travisConfig = createTravisConfig();
+      package.scripts.push(...travisConfig.scripts);
     }
 
-    if (this.answers.repository) {
-      package.repository = {
-        url: this.answers.repository
-      };
+    const rollupConfig = createRollupConfig({
+      es: useEs,
+      useTests,
+      umd: useUMD,
+      umd_name: umdName,
+      isReact,
+      isTypescript
+    });
+    package.devDependencies.push(...rollupConfig.devDependencies);
+
+    const babelConfig = createBabelConfig({ isReact });
+    package.devDependencies.push(...babelConfig.devDependencies);
+
+    let tsconfigConfig;
+    if (isTypescript) {
+      tsconfigConfig = createTsConfig({ isReact, useTests });
     }
 
-    const pmRun = this.answers.pm === "yarn" ? "yarn" : "npm run";
+    const licenseConfig = createLicenseConfig({ license, year, author, email });
+    package.license = licenseConfig.license;
+
+    const semanticReleaseConfig = createSemanticReleaseConfig();
+    package.devDependencies.push(...semanticReleaseConfig.devDependencies);
+    package.scripts.push(...semanticReleaseConfig.scripts);
+
+    const pmRun = pm === "yarn" ? "yarn" : "npm run";
+
+    let eslintConfig;
+    let tslintConfig;
+    if (isTypescript) {
+      tslintConfig = createTsLintConfig();
+      package.devDependencies.push(...tslintConfig.devDependencies);
+      const ext = isReact ? "tsx" : "ts";
+      package.scripts.push({ lint: "tslint ./src/**/*." + ext });
+    } else {
+      eslintConfig = createEsLintConfig({ isReact });
+      package.devDependencies.push(...eslintConfig.devDependencies);
+      const ext = isReact ? "jsx" : "js";
+      package.scripts.push({ lint: "eslint ./src/**/*." + ext });
+    }
 
     const readmeContent = createREADME({
-      name: package.name,
-      description: package.description,
+      name,
+      description,
       author,
       email,
-      license: package.license,
-      licenseContent,
-      repository: this.answers.repository,
-      travis: this.answers.travis,
-      semanticrelease: this.answers.semanticrelease,
-      umd: this.answers.umd,
-      umd_name: this.answers.umd_name,
-      es: this.answers.es,
-      type: this.answers.type
+      type,
+      license: licenseConfig.license,
+      licenseContent: licenseConfig.licenseContent,
+      repository: repository,
+      useTravis,
+      useSemanticRelease,
+      useUMD,
+      umdName,
+      useEs
     });
 
     return {
-      tsconfig: serializeTSConfig(tsconfig),
+      tsconfig: tsconfigConfig ? tsconfigConfig.tsconfig : "",
       package: serializePackage(package),
-      rollupConfig: serializeRollupConfig(rollupConfig, {
-        isTypescript,
-        isReact
-      }),
+      rollup: rollupConfig.rollup,
+      eslint: eslintConfig ? eslintConfig.eslint : "",
+      tslint: tslintConfig ? tslintConfig.tslint : "",
+      travis: travisConfig ? travisConfig.travis : "",
       jestContent: createJestConfig({ isTypescript }),
-      babelrc: serializeBabelRC(babelrc),
-      licenseContent,
+      babelrc: babelConfig.babelrc,
+      licenseContent: licenseConfig.licenseContent,
+      semanticrelease: semanticReleaseConfig.semanticrelease,
       readmeContent,
       pmRun
     };
   },
   actions() {
-    const validation = validate(
-      (this.answers && this.answers.name) || this.outFolder
-    );
+    const name = this.answers && this.answers.name;
+    const validation = validate(name || this.outFolder);
     validation.warnings &&
       validation.warnings.forEach(warn => {
         console.warn("Warning:", warn);
@@ -365,7 +252,7 @@ module.exports = {
         files: "**",
         templateDir: "templates",
         filters: {
-          "__tests__/**": "tests",
+          "__tests__/**": "useTests",
           "__tests__/index_spec_ts": `type=="ts"`,
           "__tests__/index_spec_tsx": `type=="tsx"`,
           "__tests__/index_spec_js": `type=="js"`,
@@ -377,9 +264,9 @@ module.exports = {
           _tsconfig_json: `type=="tsx" || type=="ts"`,
           _tslint_json: `type=="tsx" || type=="ts"`,
           _eslint_json: `type=="jsx" || type=="js"`,
-          jest_config_js: "tests",
-          travis_yml: "travis",
-          releaserc: "semanticrelease"
+          jest_config_js: "useTests",
+          travis_yml: "useTravis",
+          releaserc: "useSemanticRelease"
         }
       }
     ];
@@ -396,7 +283,7 @@ module.exports = {
         "__tests__/index_spec_js": "__tests__/index.spec.js",
         "__tests__/index_spec_jsx": "__tests__/index.spec.jsx",
         gitignore: ".gitignore",
-        babelrc: ".babelrc",
+        babelrc: "babel.config.js",
         travis_yml: ".travis.yml",
         jest_config_js: "jest.config.js",
         rollup_config_js: "rollup.config.js",
@@ -413,17 +300,20 @@ module.exports = {
   },
   async completed() {
     const { cliOptions } = this.sao.opts;
-    const silent = cliOptions.silent;
+    const isSilentMode = cliOptions.silent;
+    const useSemanticRelease = this.answers.useSemanticRelease;
+    const skipSemanticReleaseSetup = cliOptions.skipSemanticReleaseSetup;
+    const pm = this.answers.pm;
     this.gitInit();
-    await this.npmInstall({ npmClient: this.answers.pm });
-    if (!silent && this.answers.semanticrelease) {
-      // @TODO console log
+    await this.npmInstall({ npmClient: pm });
+    if (!skipSemanticReleaseSetup && !isSilentMode && useSemanticRelease) {
+      // TODO console log
       // install semantic release cli
       let options = ["add", "semantic-release-cli"];
-      if (this.answers.pm === "npm") {
+      if (pm === "npm") {
         options[0] = "install";
       }
-      spawn.sync(this.answers.pm, options, {
+      spawn.sync(pm, options, {
         cwd: this.outDir,
         stdio: "inherit"
       });
@@ -434,16 +324,16 @@ module.exports = {
       });
       // Remove semantic release cli
       options[0] = "remove";
-      if (this.answers.pm === "npm") {
+      if (pm === "npm") {
         options[0] = "uninstall";
       }
-      spawn.sync(this.answers.pm, options, {
+      spawn.sync(pm, options, {
         cwd: this.outDir,
         stdio: "inherit"
       });
     }
 
-    if (this.answers.semanticrelease) {
+    if (!skipSemanticReleaseSetup && !isSilentMode && useSemanticRelease) {
       // Setup commitizen
       spawn.sync(
         "./node_modules/.bin/commitizen",

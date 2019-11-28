@@ -1,0 +1,92 @@
+#!/usr/bin/env node
+const spawn = require("cross-spawn");
+const debug = !process.argv.includes("--no-debug");
+
+const removeTmpDirectory = () => {
+  console.log("Removing tmp directory");
+  spawn.sync("rm", ["-rf", "tmp"]);
+};
+
+const getPackagePath = type => {
+  return "tmp/child-package-" + type;
+};
+
+const createPackage = type => {
+  const packagePath = getPackagePath(type);
+  console.log("Creating package for test: " + packagePath);
+  const result = spawn.sync(
+    "node",
+    [
+      "cli",
+      packagePath,
+      "--name",
+      "test-package-" + type,
+      "--silent",
+      "--type",
+      type
+    ],
+    {
+      stdio: debug ? "inherit" : false
+    }
+  );
+  if (result.status !== 0) {
+    console.error(`Error when creating package: ${packagePath}`);
+    removeTmpDirectory();
+    process.exit(1);
+  }
+};
+
+const lintPackage = type => {
+  const packagePath = getPackagePath(type);
+  console.log("Linting package: " + packagePath);
+  const result = spawn.sync("yarn", ["lint"], {
+    cwd: packagePath,
+    stdio: debug ? "inherit" : false
+  });
+  if (result.status !== 0) {
+    console.error(`Error when linting package: ${packagePath}`);
+    removeTmpDirectory();
+    process.exit(1);
+  }
+};
+
+const buildPackage = type => {
+  const packagePath = getPackagePath(type);
+  console.log("Building package: " + packagePath);
+  const result = spawn.sync("yarn", ["build"], {
+    cwd: packagePath,
+    stdio: debug ? "inherit" : false
+  });
+  if (result.status !== 0) {
+    console.error(`Error when building package: ${packagePath}`);
+    removeTmpDirectory();
+    process.exit(1);
+  }
+};
+
+const testPackage = type => {
+  const packagePath = getPackagePath(type);
+  console.log("Testing package: " + packagePath);
+  const result = spawn.sync("yarn", ["test"], {
+    cwd: packagePath,
+    stdio: debug ? "inherit" : false
+  });
+  if (result.status !== 0) {
+    console.error(`Error when testing package: ${packagePath}`);
+    removeTmpDirectory();
+    process.exit(1);
+  }
+};
+
+console.log("Starting test...");
+removeTmpDirectory();
+const packageTypes = ["js", "jsx", "ts", "tsx"];
+console.log("Creating packages...");
+for (const type of packageTypes) {
+  createPackage(type);
+  lintPackage(type);
+  buildPackage(type);
+  testPackage(type);
+}
+removeTmpDirectory();
+console.log("Test successfully passed");

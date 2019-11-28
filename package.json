@@ -5,6 +5,12 @@
   "publishConfig": {
     "access": "public"
   },
+  "scripts": {
+    "build": "exit 0",
+    "test": "./scripts/test",
+    "travis-deploy-once": "travis-deploy-once",
+    "cz": "git-cz"
+  },
   "dependencies": {
     "cac": "^6.5.3",
     "chalk": "^3.0.0",
@@ -22,16 +28,10 @@
     "@semantic-release/npm": "^5.3.4",
     "@semantic-release/release-notes-generator": "^7.3.4",
     "cz-conventional-changelog": "^3.0.2",
+    "json2yaml": "^1.1.0",
     "semantic-release": "^15.13.31"
   },
   "bin": "./cli.js",
-  "scripts": {
-    "test": "exit 0",
-    "build": "exit 0",
-    "travis-deploy-once": "travis-deploy-once",
-    "semantic-release": "semantic-release",
-    "cz": "git-cz"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/epranka/create-package.git"
