@@ -333,7 +333,7 @@ module.exports = {
       });
     }
 
-    if (useSemanticRelease) {
+    if (!skipSemanticReleaseSetup && !isSilentMode && useSemanticRelease) {
       // Setup commitizen
       spawn.sync(
         "./node_modules/.bin/commitizen",
