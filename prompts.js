@@ -101,41 +101,41 @@ module.exports = [
     default: useNPM ? "npm" : "yarn"
   },
   {
-    name: "umd",
+    name: "useUMD",
     message: "Build to UMD module for browsers (CommonJS is default) ?",
     type: "confirm",
     default: umdBuild
   },
   {
-    name: "umd_name",
+    name: "umdName",
     message:
       "What is a global name of your package in browser (e.g. React, ReactDOM) ?",
     default: umdName,
     when: answers => {
-      if (answers["umd"]) return true;
+      if (answers["useUMD"]) return true;
       return false;
     }
   },
   {
-    name: "es",
+    name: "useEs",
     message: "Build to ES Module ?",
     type: "confirm",
     default: esBuild
   },
   {
-    name: "tests",
+    name: "useTests",
     message: "Use unit tests ?",
     type: "confirm",
     default: useTests
   },
   {
-    name: "semanticrelease",
+    name: "useSemanticRelease",
     message: "Use automatic semantic releases ?",
     type: "confirm",
     default: useSemanticRelease
   },
   {
-    name: "travis",
+    name: "useTravis",
     message: "Use Travis ?",
     type: "confirm",
     default: useTravis

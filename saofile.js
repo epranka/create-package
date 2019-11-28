@@ -1,19 +1,16 @@
 const spawn = require("cross-spawn");
 const validate = require("validate-npm-package-name");
 const serializePackage = require("./utils/serializePackage");
-const serializeTSConfig = require("./utils/serializeTSConfig");
-const serializeRollupConfig = require("./utils/serializeRollupConfig");
 const createRollupConfig = require("./utils/createRollupConfig");
-const serializeBabelRC = require("./utils/serializeBabelRC");
 const createTsConfig = require("./utils/createTsConfig");
 const createEsLintConfig = require("./utils/createEsLintConfig");
 const createTsLintConfig = require("./utils/createTsLintConfig");
 const createREADME = require("./utils/createREADME");
-const createMITLicense = require("./utils/createMITLicense");
-const createISCLicense = require("./utils/createISCLicense");
-const createUNLICENSEDLicense = require("./utils/createUNLICENSEDLicense");
+const createLicenseConfig = require("./utils/createLicenseConfig");
 const createJestConfig = require("./utils/createJestConfig");
 const createBabelConfig = require("./utils/createBabelConfig");
+const createSemanticReleaseConfig = require("./utils/createSemanticReleaseConfig");
+const createTravisConfig = require("./utils/createTravisConfig");
 const prompts = require("./prompts");
 
 module.exports = {
@@ -22,15 +19,19 @@ module.exports = {
     const { cliOptions } = this.sao.opts;
     const name = this.answers.name;
     const description = this.answers.description;
+    const license = this.answers.license;
     const type = this.answers.type;
     const author = this.answers.author;
     const email = this.answers.email;
     const year = new Date().getFullYear();
-    const es = this.answers.es;
-    const useTests = this.answers.tests;
+    const useEs = this.answers.useEs;
+    const useTests = this.answers.useTests;
+    const useSemanticRelease = this.answers.useSemanticRelease;
+    const useTravis = this.answers.useTravis;
     const repository = this.answers.repository;
-    const umd = this.answers.umd;
-    const umd_name = this.answers.umd_name;
+    const useUMD = this.answers.useUMD;
+    const umdName = this.answers.umdName;
+    const pm = this.answers.pm;
     const isTypescript = type === "tsx" || type === "ts";
     const isReact = type === "tsx" || type === "jsx";
 
@@ -42,11 +43,30 @@ module.exports = {
       process.exit(1);
     }
 
-    if (this.answers.umd) {
-      if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
+    if (useUMD) {
+      if (!umdName || !umdName.trim()) {
         console.error(
           this
             .chalk`{red No global UMD name defined while UMD module build is enabled}`
+        );
+        process.exit(1);
+      }
+    }
+
+    if (useSemanticRelease) {
+      if (!repository || !repository.trim()) {
+        console.error(
+          this
+            .chalk`{red No repository url defined while semantic release is enabled}`
+        );
+        process.exit(1);
+      }
+    }
+
+    if (useTravis) {
+      if (!repository || !repository.trim()) {
+        console.error(
+          this.chalk`{red No repository url defined while travis ci is enabled}`
         );
         process.exit(1);
       }
@@ -59,7 +79,7 @@ module.exports = {
       private: cliOptions.private ? true : undefined,
       scripts: [{ build: "rollup -c" }, { watch: "rollup -cw" }],
       main: "lib/index.js",
-      module: es ? "lib/index.es.js" : undefined,
+      module: useEs ? "lib/index.es.js" : undefined,
       types: isTypescript ? "lib/index.d.ts" : undefined,
       files: ["lib"],
       publishConfig: { access: "public" },
@@ -68,7 +88,7 @@ module.exports = {
       contributors: [],
       repository: repository
         ? {
-            url: this.answers.repository
+            url: repository
           }
         : undefined,
       license: "ISC",
@@ -135,11 +155,17 @@ module.exports = {
       }
     }
 
+    let travisConfig;
+    if (useTravis) {
+      travisConfig = createTravisConfig();
+      package.scripts.push(...travisConfig.scripts);
+    }
+
     const rollupConfig = createRollupConfig({
-      es,
+      es: useEs,
       useTests,
-      umd,
-      umd_name,
+      umd: useUMD,
+      umd_name: umdName,
       isReact,
       isTypescript
     });
@@ -153,66 +179,14 @@ module.exports = {
       tsconfigConfig = createTsConfig({ isReact, useTests });
     }
 
-    let licenseContent = createISCLicense({ year, author, email });
+    const licenseConfig = createLicenseConfig({ license, year, author, email });
+    package.license = licenseConfig.license;
 
-    if (this.answers.license === "mit") {
-      package.license = "MIT";
-      licenseContent = createMITLicense({ year, author, email });
-    } else if (this.answers.license === "unlicensed") {
-      package.license = "UNLICENSED";
-      licenseContent = createUNLICENSEDLicense({
-        year,
-        author,
-        email
-      });
-    }
+    const semanticReleaseConfig = createSemanticReleaseConfig();
+    package.devDependencies.push(...semanticReleaseConfig.devDependencies);
+    package.scripts.push(...semanticReleaseConfig.scripts);
 
-    if (this.answers.semanticrelease) {
-      package.version = "0.0.0-semantically-released";
-      package.scripts.push({
-        "semantic-release": "semantic-release"
-      });
-      package.scripts.push({
-        cz: "git-cz"
-      });
-      if (!this.answers.repository || !this.answers.repository.trim()) {
-        console.error(
-          this
-            .chalk`{red No repository url defined while semantic release is enabled}`
-        );
-        process.exit(1);
-      }
-      package.devDependencies.push({ "semantic-release": "^15.13.31" });
-      package.devDependencies.push({
-        "@semantic-release/changelog": "^3.0.6"
-      });
-      package.devDependencies.push({
-        "@semantic-release/commit-analyzer": "^6.3.3"
-      });
-      package.devDependencies.push({ "@semantic-release/git": "^7.0.18" });
-      package.devDependencies.push({
-        "@semantic-release/release-notes-generator": "^7.3.4"
-      });
-      package.devDependencies.push({
-        "@semantic-release/npm": "^5.3.4"
-      });
-      package.devDependencies.push({ commitizen: "^4.0.3" });
-    }
-
-    if (this.answers.travis) {
-      if (!this.answers.repository || !this.answers.repository.trim()) {
-        console.error(
-          this.chalk`{red No repository url defined while travis ci is enabled}`
-        );
-        process.exit(1);
-      }
-
-      package.scripts.push({
-        "travis-deploy-once": "travis-deploy-once"
-      });
-    }
-
-    const pmRun = this.answers.pm === "yarn" ? "yarn" : "npm run";
+    const pmRun = pm === "yarn" ? "yarn" : "npm run";
 
     let eslintConfig;
     let tslintConfig;
@@ -229,19 +203,19 @@ module.exports = {
     }
 
     const readmeContent = createREADME({
-      name: package.name,
-      description: package.description,
+      name,
+      description,
       author,
       email,
-      license: package.license,
-      licenseContent,
-      repository: this.answers.repository,
-      travis: this.answers.travis,
-      semanticrelease: this.answers.semanticrelease,
-      umd: this.answers.umd,
-      umd_name: this.answers.umd_name,
-      es: this.answers.es,
-      type: this.answers.type
+      type,
+      license: licenseConfig.license,
+      licenseContent: licenseConfig.licenseContent,
+      repository: repository,
+      useTravis,
+      useSemanticRelease,
+      useUMD,
+      umdName,
+      useEs
     });
 
     return {
@@ -250,21 +224,18 @@ module.exports = {
       rollup: rollupConfig.rollup,
       eslint: eslintConfig ? eslintConfig.eslint : "",
       tslint: tslintConfig ? tslintConfig.tslint : "",
-      // rollupConfig: serializeRollupConfig(rollupConfig, {
-      //   isTypescript,
-      //   isReact
-      // }),
+      travis: travisConfig ? travisConfig.travis : "",
       jestContent: createJestConfig({ isTypescript }),
       babelrc: babelConfig.babelrc,
-      licenseContent,
+      licenseContent: licenseConfig.licenseContent,
+      semanticrelease: semanticReleaseConfig.semanticrelease,
       readmeContent,
       pmRun
     };
   },
   actions() {
-    const validation = validate(
-      (this.answers && this.answers.name) || this.outFolder
-    );
+    const name = this.answers && this.answers.name;
+    const validation = validate(name || this.outFolder);
     validation.warnings &&
       validation.warnings.forEach(warn => {
         console.warn("Warning:", warn);
@@ -281,7 +252,7 @@ module.exports = {
         files: "**",
         templateDir: "templates",
         filters: {
-          "__tests__/**": "tests",
+          "__tests__/**": "useTests",
           "__tests__/index_spec_ts": `type=="ts"`,
           "__tests__/index_spec_tsx": `type=="tsx"`,
           "__tests__/index_spec_js": `type=="js"`,
@@ -293,9 +264,9 @@ module.exports = {
           _tsconfig_json: `type=="tsx" || type=="ts"`,
           _tslint_json: `type=="tsx" || type=="ts"`,
           _eslint_json: `type=="jsx" || type=="js"`,
-          jest_config_js: "tests",
-          travis_yml: "travis",
-          releaserc: "semanticrelease"
+          jest_config_js: "useTests",
+          travis_yml: "useTravis",
+          releaserc: "useSemanticRelease"
         }
       }
     ];
@@ -329,17 +300,19 @@ module.exports = {
   },
   async completed() {
     const { cliOptions } = this.sao.opts;
-    const silent = cliOptions.silent;
+    const isSilentMode = cliOptions.silent;
+    const useSemanticRelease = this.answers.useSemanticRelease;
+    const pm = this.answers.pm;
     this.gitInit();
-    await this.npmInstall({ npmClient: this.answers.pm });
-    if (!silent && this.answers.semanticrelease) {
-      // @TODO console log
+    await this.npmInstall({ npmClient: pm });
+    if (!isSilentMode && useSemanticRelease) {
+      // TODO console log
       // install semantic release cli
       let options = ["add", "semantic-release-cli"];
-      if (this.answers.pm === "npm") {
+      if (pm === "npm") {
         options[0] = "install";
       }
-      spawn.sync(this.answers.pm, options, {
+      spawn.sync(pm, options, {
         cwd: this.outDir,
         stdio: "inherit"
       });
@@ -350,16 +323,16 @@ module.exports = {
       });
       // Remove semantic release cli
       options[0] = "remove";
-      if (this.answers.pm === "npm") {
+      if (pm === "npm") {
         options[0] = "uninstall";
       }
-      spawn.sync(this.answers.pm, options, {
+      spawn.sync(pm, options, {
         cwd: this.outDir,
         stdio: "inherit"
       });
     }
 
-    if (this.answers.semanticrelease) {
+    if (useSemanticRelease) {
       // Setup commitizen
       spawn.sync(
         "./node_modules/.bin/commitizen",

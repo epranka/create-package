@@ -3,12 +3,12 @@ const gitUrlParse = require("git-url-parse");
 const createBadges = ({
   name,
   license,
-  travis,
+  type,
+  travis: useTravis,
   repository,
-  semanticrelease,
-  es,
-  umd,
-  type
+  semanticrelease: useSemanticRelease,
+  es: useEs,
+  umd: useUMD
 }) => {
   const badges = [];
   const licenseBadge = `<a href="./LICENSE">
@@ -25,7 +25,7 @@ const createBadges = ({
     <img alt="npm downloads" src="https://img.shields.io/npm/dt/${name}.svg?style=flat" />
   </a>`;
   badges.push(licenseBadge);
-  if (umd) {
+  if (useUMD) {
     const umdBadge = `<a href="https://github.com/umdjs/umd">
       <img alt="umd module" src="https://img.shields.io/badge/module-UMD-blue" />
     </a>`;
@@ -36,7 +36,7 @@ const createBadges = ({
     </a>`;
     badges.push(cjsBadge);
   }
-  if (es) {
+  if (useEs) {
     const esBadge = `<a href="https://nodejs.org/api/esm.html">
       <img alt="es module" src="https://img.shields.io/badge/module-ESM-blue" />
     </a>`;
@@ -46,7 +46,7 @@ const createBadges = ({
     badges.push(typescriptBadge);
   }
   badges.push(npmVersion, npmDownloads);
-  if (travis && repository) {
+  if (useTravis && repository) {
     const gitUrl = gitUrlParse(repository);
     const travisBadge = `<a href="https://travis-ci.org/${gitUrl.full_name}">
       <img alt="ci travis" src="https://img.shields.io/badge/ci-travis-yellow" />
@@ -56,7 +56,7 @@ const createBadges = ({
     </a>`;
     badges.push(buildBadge, travisBadge);
   }
-  if (semanticrelease) {
+  if (useSemanticRelease) {
     const semanticReleaseBadge = `<a href="https://github.com/semantic-release/semantic-release">
       <img alt="semantic release" src="https://img.shields.io/badge/%E2%9C%A8-semantic--release-e10079" />
     </a>`;
@@ -84,18 +84,18 @@ const createREADME = ({
   license,
   licenseContent,
   repository,
-  travis,
-  semanticrelease,
-  es,
-  umd,
-  umd_name,
+  useTravis,
+  useSemanticRelease,
+  useEs,
+  useUMD,
+  umdName,
   type
 }) => {
   const nameBlock = [];
   const descriptionBlock = [];
   nameBlock.push(
     `<h1 align="center" style="border-bottom: none;">⚒️ ${
-      umd ? umd_name : name
+      useUMD ? umdName : name
     }</h1>`
   );
   if (description) {
@@ -103,13 +103,13 @@ const createREADME = ({
   }
   const badgesBlock = createBadges({
     name,
-    travis,
+    type,
     repository,
     license,
-    semanticrelease,
-    es,
-    umd,
-    type
+    useSemanticRelease,
+    useTravis,
+    useEs,
+    useUMD
   });
 
   const readme = [];
