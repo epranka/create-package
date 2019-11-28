@@ -85,6 +85,7 @@ const startTest = async () => {
   await removeTmpDirectory();
   const packageTypes = ["js", "jsx", "ts", "tsx"];
   for (const type of packageTypes) {
+    const packagePath = getPackagePath(type);
     foldStart(packagePath);
     await createPackage(type);
     await lintPackage(type);
