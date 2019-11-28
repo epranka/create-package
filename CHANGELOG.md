@@ -1,3 +1,25 @@
+# [4.4.0](https://github.com/epranka/create-package/compare/v4.3.2...v4.4.0) (2019-11-28)
+
+
+### Bug Fixes
+
+* **tests:** fixed error ([21e14ab](https://github.com/epranka/create-package/commit/21e14ab46937bb0d9e043594592531fdb3614ffc))
+* bugfix ([2b5b792](https://github.com/epranka/create-package/commit/2b5b792e8f3db785a29df788864e5bd7a0790521))
+
+
+### Features
+
+* **cli:** added --skip-semantic-release option ([e8b297d](https://github.com/epranka/create-package/commit/e8b297d0c48a94a12d81a579682756a219cdea26))
+* changed semantic release and travis to default: No ([f469665](https://github.com/epranka/create-package/commit/f4696657844953cd4fe512d7bc97fced7ff65645))
+* **cli:** --type option ([90ff8eb](https://github.com/epranka/create-package/commit/90ff8eb3f11fc1b520b5fd60f2642030724d9e49))
+* eslinting ([71b5d4b](https://github.com/epranka/create-package/commit/71b5d4b233300836ac5117eb5a7a2d7471eb0bc6))
+* tslinting ([24fa452](https://github.com/epranka/create-package/commit/24fa452369c6a7dbcc042955a9f741978fe73346))
+
+
+### Performance Improvements
+
+* jest updated ([682ddca](https://github.com/epranka/create-package/commit/682ddca402d8e40625c516f2efc2435aac57b5b9))
+
 ## [4.3.2](https://github.com/epranka/create-package/compare/v4.3.1...v4.3.2) (2019-11-28)
 
 
