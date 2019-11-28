@@ -1,3 +1,10 @@
+## [4.3.2](https://github.com/epranka/create-package/compare/v4.3.1...v4.3.2) (2019-11-28)
+
+
+### Bug Fixes
+
+* fixed bug when trying to create new package without git ([a822eb2](https://github.com/epranka/create-package/commit/a822eb2f901420318d41c3a2bfd54bb34a6fdf9f)), closes [#6](https://github.com/epranka/create-package/issues/6)
+
 ## [4.3.1](https://github.com/epranka/create-package/compare/v4.3.0...v4.3.1) (2019-11-27)
 
 # [4.3.0](https://github.com/epranka/create-package/compare/v4.2.0...v4.3.0) (2019-11-27)
