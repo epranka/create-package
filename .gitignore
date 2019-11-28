@@ -4,8 +4,8 @@ node_modules/
 npm-debug.log
 yarn-error.log
 
+# testing
+tmp
+
 # visual studio code
 .vscode
-
-# dist
-dist

@@ -7,8 +7,8 @@
   },
   "scripts": {
     "build": "exit 0",
-    "travis-deploy-once": "travis-deploy-once",
     "test": "./scripts/test",
+    "travis-deploy-once": "travis-deploy-once",
     "cz": "git-cz"
   },
   "dependencies": {
