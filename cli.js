@@ -35,16 +35,19 @@ cli
   .option("--description <name>", "Description of the package")
   .option("--author <fullname>", "Author of package <fullname>")
   .option("--email <email>", "<email> of author")
+  .option("--npm", "Use NPM package manager. Default is YARN")
   .option("--mit", "MIT license. Default is ISC")
   .option("--umd <GlobalName>", "Build UMD module with <GlobalName>")
-  .option("--type <ts|tsx|js|jsx>", "Type of package, one of TS, TSX, JS, JSX")
+  .option(
+    "--type <ts|tsx|js|jsx>",
+    "Type of package, one of TS, TSX, JS, JSX. Default is TS"
+  )
   .option("--unlicensed", "Unlicensed. This option overrides --mit option")
+  .option("--travis", "Use Travis ci")
+  .option("--semantic-release", "Use semantic release")
   .option("--no-private", "No private:true property in package.json")
   .option("--no-es", "Don't build ES Module")
-  .option("--no-travis", "Don't use travis ci.")
   .option("--no-tests", "Don't use tests")
-  .option("--no-semantic-release", "Don't use semantic release")
-  .option("--npm", "Use NPM package manager. Default is YARN")
   .option("--verbose", "Show debug logs")
   .action((outDir = ".", cliOptions) => {
     if (cliOptions.info) {

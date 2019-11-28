@@ -15,15 +15,12 @@ const author = options.author;
 const email = options.email;
 const umdBuild = !!options.umd;
 const umdName = options.umd;
-const esBuild = options.es;
-const useTravis = options.travis;
-const useTests = options.tests;
+const esBuild = !!options.es;
+const useTravis = !!options.travis;
+const useSemanticRelease = !!options.semanticRelease;
+const useTests = !!options.tests;
+const useNPM = !!options.npm;
 const type = options.type || "ts";
-let useSemanticRelease = options["semantic-release"];
-if (options.semanticRelease === false) {
-  useSemanticRelease = false;
-}
-const useNPM = options["npm"];
 
 module.exports = [
   {
@@ -61,13 +58,13 @@ module.exports = [
     default: type
   },
   {
-    name: "author",
+    name: "author (public)",
     message: "Full name of package author",
     default: author
   },
   {
     name: "email",
-    message: "Email of package author",
+    message: "Email of package author (public)",
     default: email
   },
   {
