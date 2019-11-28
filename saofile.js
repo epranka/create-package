@@ -20,12 +20,15 @@ module.exports = {
   prompts: prompts,
   templateData() {
     const { cliOptions } = this.sao.opts;
+    const name = this.answers.name;
+    const description = this.answers.description;
     const type = this.answers.type;
     const author = this.answers.author;
     const email = this.answers.email;
     const year = new Date().getFullYear();
     const es = this.answers.es;
     const useTests = this.answers.tests;
+    const repository = this.answers.repository;
     const umd = this.answers.umd;
     const umd_name = this.answers.umd_name;
     const isTypescript = type === "tsx" || type === "ts";
@@ -41,80 +44,30 @@ module.exports = {
       }
     }
 
-    let licenseContent = createISCLicense({ year, author, email });
-
-    let tsconfigConfig;
-    if (isTypescript) {
-      tsconfigConfig = createTsConfig({ isReact, useTests });
-    }
-
-    // const tsconfig = {
-    //   compilerOptions: {
-    //     outDir: "./lib",
-    //     target: "esnext",
-    //     moduleResolution: "node",
-    //     module: "esnext",
-    //     jsx: undefined,
-    //     skipLibCheck: true,
-    //     lib: ["dom", "es6"],
-    //     declaration: true,
-    //     sourceMap: true,
-    //     esModuleInterop: true,
-    //     allowSyntheticDefaultImports: true
-    //     // experimentalDecorators: true,
-    //     // removeComments: true,
-    //     // noImplicitAny: false,
-    //     // noImplicitThis: true,
-    //     // noImplicitReturns: true,
-    //     // noFallthroughCasesInSwitch: true,
-    //   },
-    //   exclude: ["node_modules"],
-    //   includes: ["./src"]
-    // };
-
     const package = {
-      name: this.answers.name,
-      description: this.answers.description,
-      private: undefined,
+      name: name,
+      description: description,
       version: "0.0.1",
+      private: cliOptions.private ? true : undefined,
+      scripts: [{ build: "rollup -c" }, { watch: "rollup -cw" }],
       main: "lib/index.js",
-      module: undefined,
-      types: undefined,
+      module: es ? "lib/index.es.js" : undefined,
+      types: isTypescript ? "lib/index.d.ts" : undefined,
       files: ["lib"],
       publishConfig: { access: "public" },
       keywords: [],
       author: undefined,
       contributors: [],
-      repository: "",
+      repository: repository
+        ? {
+            url: this.answers.repository
+          }
+        : undefined,
       license: "ISC",
-      scripts: [{ build: "rollup -c" }, { watch: "rollup -cw" }],
       dependencies: [],
-      devDependencies: [
-        // { "@babel/cli": "^7.2.3" },
-        // { "@babel/core": "^7.3.4" },
-        // { "@babel/plugin-proposal-class-properties": "^7.3.4" },
-        // { "@babel/plugin-proposal-decorators": "^7.4.4" },
-        // { "@babel/plugin-proposal-object-rest-spread": "^7.3.4" },
-        // { "@babel/preset-env": "^7.3.4" },
-        // { lodash: "^4.17.15" }
-        // { rollup: "^1.27.5" },
-        // { "rollup-plugin-terser": "^5.1.2" },
-        // { "rollup-plugin-cleanup": "^3.1.1" },
-        // { "rollup-plugin-commonjs": "^10.1.0" },
-        // { "rollup-plugin-delete": "^1.1.0" },
-        // { "rollup-plugin-progress": "^1.1.1" }
-      ],
+      devDependencies: [],
       peerDependencies: []
     };
-
-    // const babelrc = {
-    //   presets: ["@babel/env"],
-    //   plugins: [
-    //     ["@babel/plugin-proposal-decorators", { legacy: true }],
-    //     "@babel/proposal-class-properties",
-    //     "@babel/proposal-object-rest-spread"
-    //   ]
-    // };
 
     const authorObject = [];
     if (author) {
@@ -126,36 +79,53 @@ module.exports = {
       package.contributors.push(authorObject.join(" "));
     }
 
-    // const rollupConfig = {
-    //   input: undefined,
-    //   output: [],
-    //   plugins: [
-    //     `progress({clearLines: false})`,
-    //     `del({targets: [
-    //       "lib/*"
-    //     ]})`,
-    //     `commonjs({
-    //       namedExports: {}
-    //     })`,
-    //     isTypescript
-    //       ? this.answers.tests
-    //         ? `typescript({
-    //       tsconfigOverride: {
-    //         exclude: ["./__tests__"]
-    //       }
-    //     })`
-    //         : `typescript()`
-    //       : isReact
-    //       ? `babel({exclude: "node_modules/**"})`
-    //       : null,
-    //     `terser()`,
-    //     `cleanup()`
-    //   ],
-    //   external: [
-    //     "...Object.keys(pkg.dependencies || {})",
-    //     "...Object.keys(pkg.peerDependencies || {})"
-    //   ]
-    // };
+    if (useTests) {
+      package.scripts.push({ test: "jest" });
+      package.devDependencies.push({ jest: "^24.1.0" });
+
+      if (isReact) {
+        package.devDependencies.push(
+          { enzyme: "^3.10.0" },
+          { "react-test-renderer": "^16.8.6" },
+          { "enzyme-adapter-react-16": "^1.10.0" }
+        );
+      }
+
+      if (isTypescript) {
+        package.devDependencies.push(
+          { "@types/jest": "^24.0.9" },
+          { "ts-jest": "^24.0.0" }
+        );
+
+        if (isReact) {
+          package.devDependencies.push(
+            { "@types/enzyme": "^3.10.3" },
+            { "@types/enzyme-adapter-react-16": "^1.0.5" }
+          );
+        }
+      }
+    } else {
+      package.scripts.push({
+        test: 'echo \\"Warn: No test specified\\" && exit 0"'
+      });
+    }
+
+    if (isReact) {
+      package.devDependencies.push({ react: "*" }, { "react-dom": "*" });
+      package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
+    }
+
+    if (isTypescript) {
+      package.devDependencies.push({ typescript: "^3.3.3333" });
+      package.types = "lib/index.d.ts";
+
+      if (isReact) {
+        package.devDependencies.push(
+          { "@types/react": "^16.8.5" },
+          { "@types/react-dom": "^16.8.2" }
+        );
+      }
+    }
 
     const rollupConfig = createRollupConfig({
       es,
@@ -167,55 +137,15 @@ module.exports = {
     });
     package.devDependencies.push(...rollupConfig.devDependencies);
 
-    if (cliOptions.private) {
-      package.private = true;
-    }
+    const babelConfig = createBabelConfig({ isReact });
+    package.devDependencies.push(...babelConfig.devDependencies);
 
-    const babelRcConfig = createBabelConfig({ isReact });
-    package.devDependencies.push(...babelRcConfig.devDependencies);
-
+    let tsconfigConfig;
     if (isTypescript) {
-      package.devDependencies.push(
-        // { "@babel/plugin-transform-typescript": "^7.3.2" },
-        // { "@babel/preset-typescript": "^7.3.3" },
-        // { tslint: "^5.13.0" },
-        { typescript: "^3.3.3333" }
-        // { "rollup-plugin-typescript2": "^0.25.2" }
-      );
-      package.types = "lib/index.d.ts";
-      // babelrc.presets.unshift("@babel/typescript");
-      // babelrc.plugins.push("@babel/plugin-transform-typescript");
-    } else {
-      package.devDependencies.push({ eslint: "^6.7.1" });
+      tsconfigConfig = createTsConfig({ isReact, useTests });
     }
 
-    if (this.answers.type === "tsx") {
-      // tsconfig.compilerOptions.jsx = "react";
-      // rollupConfig.input = "./src/index.tsx";
-      package.devDependencies.push(
-        { "@types/hoist-non-react-statics": "^3.3.1" },
-        { "@types/react": "^16.8.5" },
-        { "@types/react-dom": "^16.8.2" },
-        { react: "*" },
-        { "react-dom": "*" }
-        // { "tslint-react": "^3.6.0" }
-      );
-      package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
-    } else if (this.answers.type === "ts") {
-      // rollupConfig.input = "./src/index.ts";
-    } else if (this.answers.type === "jsx") {
-      // rollupConfig.input = "./src/index.jsx";
-      package.devDependencies.push(
-        // { "@babel/preset-react": "^7.7.4" },
-        { "rollup-plugin-babel": "^4.3.3" },
-        { react: "*" },
-        { "react-dom": "*" }
-      );
-      package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
-      // babelrc.presets.push("@babel/preset-react");
-    } else if (this.answers.type === "js") {
-      // rollupConfig.input = "./src/index.js";
-    }
+    let licenseContent = createISCLicense({ year, author, email });
 
     if (this.answers.license === "mit") {
       package.license = "MIT";
@@ -226,78 +156,6 @@ module.exports = {
         year,
         author,
         email
-      });
-    }
-
-    // if (this.answers.umd) {
-    //   if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
-    //     console.error(
-    //       this
-    //         .chalk`{red No global UMD name defined while UMD module build is enabled}`
-    //     );
-    //     process.exit(1);
-    //   }
-    //   const umdOutput = `{
-    //     file: pkg.main,
-    //     format: "umd",
-    //     name: "${this.answers.umd_name}",
-    //     globals: {
-    //       ${
-    //         this.answers.type === "tsx" || this.answers.type === "jsx"
-    //           ? `react: "React"`
-    //           : ""
-    //       }
-    //     }
-    //   }`;
-    //   rollupConfig.output.push(umdOutput);
-    // } else {
-    //   const cjsOutput = `{
-    //     file: pkg.main,
-    //     format: "cjs"
-    //   }`;
-    //   rollupConfig.output.push(cjsOutput);
-    // }
-
-    if (this.answers.es) {
-      package.module = "lib/index.es.js";
-      // const esOutput = `{
-      //   file: pkg.module,
-      //   format: "es"
-      // }`;
-      // rollupConfig.output.push(esOutput);
-    }
-
-    if (this.answers.tests) {
-      // tsconfig.includes.push("./__tests__");
-      package.scripts.push({ test: "jest" });
-      package.devDependencies.push({ jest: "^24.1.0" });
-      if (this.answers.type === "ts") {
-        package.devDependencies.push(
-          { "@types/jest": "^24.0.9" },
-          { "ts-jest": "^24.0.0" }
-        );
-      }
-      if (this.answers.type === "tsx") {
-        package.devDependencies.push(
-          { "@types/jest": "^24.0.9" },
-          { "ts-jest": "^24.0.0" },
-          { "@types/enzyme": "^3.10.3" },
-          { enzyme: "^3.10.0" },
-          { "@types/enzyme-adapter-react-16": "^1.0.5" },
-          { "react-test-renderer": "^16.8.6" },
-          { "enzyme-adapter-react-16": "^1.10.0" }
-        );
-      }
-      if (this.answers.type === "jsx") {
-        package.devDependencies.push(
-          { enzyme: "^3.10.0" },
-          { "react-test-renderer": "^16.8.6" },
-          { "enzyme-adapter-react-16": "^1.10.0" }
-        );
-      }
-    } else {
-      package.scripts.push({
-        test: 'echo \\"Warn: No test specified\\" && exit 0"'
       });
     }
 
@@ -346,12 +204,6 @@ module.exports = {
       });
     }
 
-    if (this.answers.repository) {
-      package.repository = {
-        url: this.answers.repository
-      };
-    }
-
     const pmRun = this.answers.pm === "yarn" ? "yarn" : "npm run";
 
     let eslintConfig;
@@ -362,7 +214,7 @@ module.exports = {
       const ext = isReact ? "tsx" : "ts";
       package.scripts.push({ lint: "tslint ./src/**/*." + ext });
     } else {
-      eslintConfig = createEsLintConfig();
+      eslintConfig = createEsLintConfig({ isReact });
       package.devDependencies.push(...eslintConfig.devDependencies);
       const ext = isReact ? "jsx" : "js";
       package.scripts.push({ lint: "eslint ./src/**/*." + ext });
@@ -395,7 +247,7 @@ module.exports = {
       //   isReact
       // }),
       jestContent: createJestConfig({ isTypescript }),
-      babelrc: babelRcConfig.babelrc,
+      babelrc: babelConfig.babelrc,
       licenseContent,
       readmeContent,
       pmRun
