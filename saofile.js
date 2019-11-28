@@ -89,7 +89,7 @@ module.exports = {
 
     if (useTests) {
       package.scripts.push({ test: "jest" });
-      package.devDependencies.push({ jest: "^24.1.0" });
+      package.devDependencies.push({ jest: "^24.9.0" });
 
       if (isReact) {
         package.devDependencies.push(
@@ -101,7 +101,7 @@ module.exports = {
 
       if (isTypescript) {
         package.devDependencies.push(
-          { "@types/jest": "^24.0.9" },
+          { "@types/jest": "^24.0.23" },
           { "ts-jest": "^24.0.0" }
         );
 
