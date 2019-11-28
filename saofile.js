@@ -6,6 +6,7 @@ const serializeRollupConfig = require("./utils/serializeRollupConfig");
 const createRollupConfig = require("./utils/createRollupConfig");
 const serializeBabelRC = require("./utils/serializeBabelRC");
 const createEsLintConfig = require("./utils/createEsLintConfig");
+const createTsLintConfig = require("./utils/createTsLintConfig");
 const createREADME = require("./utils/createREADME");
 const createMITLicense = require("./utils/createMITLicense");
 const createISCLicense = require("./utils/createISCLicense");
@@ -170,7 +171,7 @@ module.exports = {
       package.devDependencies.push(
         // { "@babel/plugin-transform-typescript": "^7.3.2" },
         // { "@babel/preset-typescript": "^7.3.3" },
-        { tslint: "^5.13.0" },
+        // { tslint: "^5.13.0" },
         { typescript: "^3.3.3333" }
         // { "rollup-plugin-typescript2": "^0.25.2" }
       );
@@ -347,7 +348,13 @@ module.exports = {
     const pmRun = this.answers.pm === "yarn" ? "yarn" : "npm run";
 
     let eslintConfig;
-    if (!isTypescript) {
+    let tslintConfig;
+    if (isTypescript) {
+      tslintConfig = createTsLintConfig();
+      package.devDependencies.push(...tslintConfig.devDependencies);
+      const ext = isReact ? "tsx" : "ts";
+      package.scripts.push({ lint: "tslint ./src/**/*." + ext });
+    } else {
       eslintConfig = createEsLintConfig();
       package.devDependencies.push(...eslintConfig.devDependencies);
       const ext = isReact ? "jsx" : "js";
@@ -375,6 +382,7 @@ module.exports = {
       package: serializePackage(package),
       rollup: rollupConfig.rollup,
       eslint: eslintConfig ? eslintConfig.eslint : "",
+      tslint: tslintConfig ? tslintConfig.tslint : "",
       // rollupConfig: serializeRollupConfig(rollupConfig, {
       //   isTypescript,
       //   isReact
