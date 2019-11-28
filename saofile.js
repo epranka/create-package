@@ -302,10 +302,11 @@ module.exports = {
     const { cliOptions } = this.sao.opts;
     const isSilentMode = cliOptions.silent;
     const useSemanticRelease = this.answers.useSemanticRelease;
+    const skipSemanticReleaseSetup = cliOptions.skipSemanticReleaseSetup;
     const pm = this.answers.pm;
     this.gitInit();
     await this.npmInstall({ npmClient: pm });
-    if (!isSilentMode && useSemanticRelease) {
+    if (!skipSemanticReleaseSetup && !isSilentMode && useSemanticRelease) {
       // TODO console log
       // install semantic release cli
       let options = ["add", "semantic-release-cli"];

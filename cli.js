@@ -48,6 +48,7 @@ cli
   .option("--no-private", "No private:true property in package.json")
   .option("--no-es", "Don't build ES Module")
   .option("--no-tests", "Don't use tests")
+  .option("--skip-semantic-release-setup", "Skip semantic release setup")
   .option("--verbose", "Show debug logs")
   .action((outDir = ".", cliOptions) => {
     if (cliOptions.info) {
