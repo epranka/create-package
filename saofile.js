@@ -3,24 +3,41 @@ const validate = require("validate-npm-package-name");
 const serializePackage = require("./utils/serializePackage");
 const serializeTSConfig = require("./utils/serializeTSConfig");
 const serializeRollupConfig = require("./utils/serializeRollupConfig");
+const createRollupConfig = require("./utils/createRollupConfig");
 const serializeBabelRC = require("./utils/serializeBabelRC");
+const createEsLintConfig = require("./utils/createEsLintConfig");
 const createREADME = require("./utils/createREADME");
 const createMITLicense = require("./utils/createMITLicense");
 const createISCLicense = require("./utils/createISCLicense");
 const createUNLICENSEDLicense = require("./utils/createUNLICENSEDLicense");
 const createJestConfig = require("./utils/createJestConfig");
+const createBabelConfig = require("./utils/createBabelConfig");
 const prompts = require("./prompts");
 
 module.exports = {
   prompts: prompts,
   templateData() {
     const { cliOptions } = this.sao.opts;
+    const type = this.answers.type;
     const author = this.answers.author;
     const email = this.answers.email;
     const year = new Date().getFullYear();
-    const isTypescript =
-      this.answers.type === "tsx" || this.answers.type === "ts";
-    const isReact = this.answers.type === "tsx" || this.answers.type === "jsx";
+    const es = this.answers.es;
+    const useTests = this.answers.tests;
+    const umd = this.answers.umd;
+    const umd_name = this.answers.umd_name;
+    const isTypescript = type === "tsx" || type === "ts";
+    const isReact = type === "tsx" || type === "jsx";
+
+    if (this.answers.umd) {
+      if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
+        console.error(
+          this
+            .chalk`{red No global UMD name defined while UMD module build is enabled}`
+        );
+        process.exit(1);
+      }
+    }
 
     let licenseContent = createISCLicense({ year, author, email });
 
@@ -65,31 +82,31 @@ module.exports = {
       scripts: [{ build: "rollup -c" }, { watch: "rollup -cw" }],
       dependencies: [],
       devDependencies: [
-        { "@babel/cli": "^7.2.3" },
-        { "@babel/core": "^7.3.4" },
-        { "@babel/plugin-proposal-class-properties": "^7.3.4" },
-        { "@babel/plugin-proposal-decorators": "^7.4.4" },
-        { "@babel/plugin-proposal-object-rest-spread": "^7.3.4" },
-        { "@babel/preset-env": "^7.3.4" },
-        { lodash: "^4.17.15" },
-        { rollup: "^1.27.5" },
-        { "rollup-plugin-terser": "^5.1.2" },
-        { "rollup-plugin-cleanup": "^3.1.1" },
-        { "rollup-plugin-commonjs": "^10.1.0" },
-        { "rollup-plugin-delete": "^1.1.0" },
-        { "rollup-plugin-progress": "^1.1.1" }
+        // { "@babel/cli": "^7.2.3" },
+        // { "@babel/core": "^7.3.4" },
+        // { "@babel/plugin-proposal-class-properties": "^7.3.4" },
+        // { "@babel/plugin-proposal-decorators": "^7.4.4" },
+        // { "@babel/plugin-proposal-object-rest-spread": "^7.3.4" },
+        // { "@babel/preset-env": "^7.3.4" },
+        { lodash: "^4.17.15" }
+        // { rollup: "^1.27.5" },
+        // { "rollup-plugin-terser": "^5.1.2" },
+        // { "rollup-plugin-cleanup": "^3.1.1" },
+        // { "rollup-plugin-commonjs": "^10.1.0" },
+        // { "rollup-plugin-delete": "^1.1.0" },
+        // { "rollup-plugin-progress": "^1.1.1" }
       ],
       peerDependencies: []
     };
 
-    const babelrc = {
-      presets: ["@babel/env"],
-      plugins: [
-        ["@babel/plugin-proposal-decorators", { legacy: true }],
-        "@babel/proposal-class-properties",
-        "@babel/proposal-object-rest-spread"
-      ]
-    };
+    // const babelrc = {
+    //   presets: ["@babel/env"],
+    //   plugins: [
+    //     ["@babel/plugin-proposal-decorators", { legacy: true }],
+    //     "@babel/proposal-class-properties",
+    //     "@babel/proposal-object-rest-spread"
+    //   ]
+    // };
 
     const authorObject = [];
     if (author) {
@@ -101,58 +118,72 @@ module.exports = {
       package.contributors.push(authorObject.join(" "));
     }
 
-    const rollupConfig = {
-      input: undefined,
-      output: [],
-      plugins: [
-        `progress({clearLines: false})`,
-        `del({targets: [
-          "lib/*"
-        ]})`,
-        `commonjs({
-          namedExports: {}
-        })`,
-        isTypescript
-          ? this.answers.tests
-            ? `typescript({
-          tsconfigOverride: {
-            exclude: ["./__tests__"]
-          }
-        })`
-            : `typescript()`
-          : isReact
-          ? `babel({exclude: "node_modules/**"})`
-          : null,
-        `terser()`,
-        `cleanup()`
-      ],
-      external: [
-        "...Object.keys(pkg.dependencies || {})",
-        "...Object.keys(pkg.peerDependencies || {})"
-      ]
-    };
+    // const rollupConfig = {
+    //   input: undefined,
+    //   output: [],
+    //   plugins: [
+    //     `progress({clearLines: false})`,
+    //     `del({targets: [
+    //       "lib/*"
+    //     ]})`,
+    //     `commonjs({
+    //       namedExports: {}
+    //     })`,
+    //     isTypescript
+    //       ? this.answers.tests
+    //         ? `typescript({
+    //       tsconfigOverride: {
+    //         exclude: ["./__tests__"]
+    //       }
+    //     })`
+    //         : `typescript()`
+    //       : isReact
+    //       ? `babel({exclude: "node_modules/**"})`
+    //       : null,
+    //     `terser()`,
+    //     `cleanup()`
+    //   ],
+    //   external: [
+    //     "...Object.keys(pkg.dependencies || {})",
+    //     "...Object.keys(pkg.peerDependencies || {})"
+    //   ]
+    // };
+
+    const rollupConfig = createRollupConfig({
+      es,
+      useTests,
+      umd,
+      umd_name,
+      isReact,
+      isTypescript
+    });
+    package.devDependencies.push(...rollupConfig.devDependencies);
+
     if (cliOptions.private) {
       package.private = true;
     }
 
+    const babelRcConfig = createBabelConfig({ isReact });
+    package.devDependencies.push(...babelRcConfig.devDependencies);
+
     if (isTypescript) {
       package.devDependencies.push(
-        { "@babel/plugin-transform-typescript": "^7.3.2" },
-        { "@babel/preset-typescript": "^7.3.3" },
+        // { "@babel/plugin-transform-typescript": "^7.3.2" },
+        // { "@babel/preset-typescript": "^7.3.3" },
         { tslint: "^5.13.0" },
-        { typescript: "^3.3.3333" },
-        { "rollup-plugin-typescript2": "^0.25.2" }
+        { typescript: "^3.3.3333" }
+        // { "rollup-plugin-typescript2": "^0.25.2" }
       );
       package.types = "lib/index.d.ts";
-      babelrc.presets.unshift("@babel/typescript");
-      babelrc.plugins.push("@babel/plugin-transform-typescript");
+      // babelrc.presets.unshift("@babel/typescript");
+      // babelrc.plugins.push("@babel/plugin-transform-typescript");
     } else {
       package.devDependencies.push({ eslint: "^6.7.1" });
     }
 
     if (this.answers.type === "tsx") {
       tsconfig.compilerOptions.jsx = "react";
-      rollupConfig.input = "./src/index.tsx";
+      // rollupConfig.input = "./src/index.tsx";
       package.devDependencies.push(
         { "@types/hoist-non-react-statics": "^3.3.1" },
         { "@types/react": "^16.8.5" },
@@ -163,19 +194,19 @@ module.exports = {
       );
       package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
     } else if (this.answers.type === "ts") {
-      rollupConfig.input = "./src/index.ts";
+      // rollupConfig.input = "./src/index.ts";
     } else if (this.answers.type === "jsx") {
-      rollupConfig.input = "./src/index.jsx";
+      // rollupConfig.input = "./src/index.jsx";
       package.devDependencies.push(
-        { "@babel/preset-react": "^7.7.4" },
+        // { "@babel/preset-react": "^7.7.4" },
         { "rollup-plugin-babel": "^4.3.3" },
         { react: "*" },
         { "react-dom": "*" }
       );
       package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
-      babelrc.presets.push("@babel/preset-react");
+      // babelrc.presets.push("@babel/preset-react");
     } else if (this.answers.type === "js") {
-      rollupConfig.input = "./src/index.js";
+      // rollupConfig.input = "./src/index.js";
     }
 
     if (this.answers.license === "mit") {
@@ -190,42 +221,42 @@ module.exports = {
       });
     }
 
-    if (this.answers.umd) {
-      if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
-        console.error(
-          this
-            .chalk`{red No global UMD name defined while UMD module build is enabled}`
-        );
-        process.exit(1);
-      }
-      const umdOutput = `{
-        file: pkg.main,
-        format: "umd",
-        name: "${this.answers.umd_name}",
-        globals: {
-          ${
-            this.answers.type === "tsx" || this.answers.type === "jsx"
-              ? `react: "React"`
-              : ""
-          }
-        }
-      }`;
-      rollupConfig.output.push(umdOutput);
-    } else {
-      const cjsOutput = `{
-        file: pkg.main,
-        format: "cjs"
-      }`;
-      rollupConfig.output.push(cjsOutput);
-    }
+    // if (this.answers.umd) {
+    //   if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
+    //     console.error(
+    //       this
+    //         .chalk`{red No global UMD name defined while UMD module build is enabled}`
+    //     );
+    //     process.exit(1);
+    //   }
+    //   const umdOutput = `{
+    //     file: pkg.main,
+    //     format: "umd",
+    //     name: "${this.answers.umd_name}",
+    //     globals: {
+    //       ${
+    //         this.answers.type === "tsx" || this.answers.type === "jsx"
+    //           ? `react: "React"`
+    //           : ""
+    //       }
+    //     }
+    //   }`;
+    //   rollupConfig.output.push(umdOutput);
+    // } else {
+    //   const cjsOutput = `{
+    //     file: pkg.main,
+    //     format: "cjs"
+    //   }`;
+    //   rollupConfig.output.push(cjsOutput);
+    // }
 
     if (this.answers.es) {
       package.module = "lib/index.es.js";
-      const esOutput = `{
-        file: pkg.module,
-        format: "es"
-      }`;
-      rollupConfig.output.push(esOutput);
+      // const esOutput = `{
+      //   file: pkg.module,
+      //   format: "es"
+      // }`;
+      // rollupConfig.output.push(esOutput);
     }
 
     if (this.answers.tests) {
@@ -315,6 +346,14 @@ module.exports = {
 
     const pmRun = this.answers.pm === "yarn" ? "yarn" : "npm run";
 
+    let eslintConfig;
+    if (!isTypescript) {
+      eslintConfig = createEsLintConfig();
+      package.devDependencies.push(...eslintConfig.devDependencies);
+      const ext = isReact ? "jsx" : "js";
+      package.scripts.push({ lint: "eslint ./src/**/*." + ext });
+    }
+
     const readmeContent = createREADME({
       name: package.name,
       description: package.description,
@@ -334,12 +373,14 @@ module.exports = {
     return {
       tsconfig: serializeTSConfig(tsconfig),
       package: serializePackage(package),
-      rollupConfig: serializeRollupConfig(rollupConfig, {
-        isTypescript,
-        isReact
-      }),
+      rollup: rollupConfig.rollup,
+      eslint: eslintConfig ? eslintConfig.eslint : "",
+      // rollupConfig: serializeRollupConfig(rollupConfig, {
+      //   isTypescript,
+      //   isReact
+      // }),
       jestContent: createJestConfig({ isTypescript }),
-      babelrc: serializeBabelRC(babelrc),
+      babelrc: babelRcConfig.babelrc,
       licenseContent,
       readmeContent,
       pmRun
@@ -396,7 +437,7 @@ module.exports = {
         "__tests__/index_spec_js": "__tests__/index.spec.js",
         "__tests__/index_spec_jsx": "__tests__/index.spec.jsx",
         gitignore: ".gitignore",
-        babelrc: ".babelrc",
+        babelrc: "babel.config.js",
         travis_yml: ".travis.yml",
         jest_config_js: "jest.config.js",
         rollup_config_js: "rollup.config.js",
