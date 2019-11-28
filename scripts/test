@@ -22,8 +22,6 @@ const createPackage = type => {
       "--name",
       "test-package-" + type,
       "--silent",
-      "--no-semantic-release",
-      "--no-travis",
       "--type",
       type
     ],

@@ -45,6 +45,7 @@ cli
   .option("--unlicensed", "Unlicensed. This option overrides --mit option")
   .option("--travis", "Use Travis ci")
   .option("--semantic-release", "Use semantic release")
+  .option("--repository <url>", "Repository URL")
   .option("--no-private", "No private:true property in package.json")
   .option("--no-es", "Don't build ES Module")
   .option("--no-tests", "Don't use tests")

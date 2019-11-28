@@ -11,12 +11,14 @@ if (options["unlicensed"]) {
 }
 const name = options.name;
 const description = options.description;
+const isSilentMode = options.silent;
 const author = options.author;
 const email = options.email;
 const umdBuild = !!options.umd;
 const umdName = options.umd;
 const esBuild = !!options.es;
 const useTravis = !!options.travis;
+const repository = options.repository;
 const useSemanticRelease = !!options.semanticRelease;
 const useTests = !!options.tests;
 const useNPM = !!options.npm;
@@ -149,12 +151,20 @@ module.exports = [
     name: "repository",
     message: "Repository URL",
     validate: (value, answers) => {
-      if (answers["useSemanticRelease"] || answers["useTravis"]) {
+      if (answers && (answers["useSemanticRelease"] || answers["useTravis"])) {
+        return required(
+          "If you want to use semantic releases or travis ci, the repository URL is required"
+        )(value);
+      } else if (
+        !answers &&
+        isSilentMode &&
+        (useSemanticRelease || useTravis)
+      ) {
         return required(
           "If you want to use semantic releases or travis ci, the repository URL is required"
         )(value);
       } else return true;
     },
-    default: getRepositoryURL()
+    default: typeof repository !== "undefined" ? repository : getRepositoryURL()
   }
 ];
