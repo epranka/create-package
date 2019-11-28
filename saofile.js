@@ -5,6 +5,7 @@ const serializeTSConfig = require("./utils/serializeTSConfig");
 const serializeRollupConfig = require("./utils/serializeRollupConfig");
 const createRollupConfig = require("./utils/createRollupConfig");
 const serializeBabelRC = require("./utils/serializeBabelRC");
+const createTsConfig = require("./utils/createTsConfig");
 const createEsLintConfig = require("./utils/createEsLintConfig");
 const createTsLintConfig = require("./utils/createTsLintConfig");
 const createREADME = require("./utils/createREADME");
@@ -42,29 +43,35 @@ module.exports = {
 
     let licenseContent = createISCLicense({ year, author, email });
 
-    const tsconfig = {
-      compilerOptions: {
-        outDir: "./lib",
-        target: "esnext",
-        moduleResolution: "node",
-        module: "esnext",
-        jsx: undefined,
-        skipLibCheck: true,
-        lib: ["dom", "es6"],
-        experimentalDecorators: true,
-        declaration: true,
-        sourceMap: true,
-        removeComments: true,
-        noImplicitAny: false,
-        noImplicitThis: true,
-        noImplicitReturns: true,
-        noFallthroughCasesInSwitch: true,
-        esModuleInterop: true,
-        allowSyntheticDefaultImports: true
-      },
-      exclude: ["node_modules"],
-      includes: ["./src"]
-    };
+    let tsconfigConfig;
+    if (isTypescript) {
+      tsconfigConfig = createTsConfig({ isReact, useTests });
+    }
+
+    // const tsconfig = {
+    //   compilerOptions: {
+    //     outDir: "./lib",
+    //     target: "esnext",
+    //     moduleResolution: "node",
+    //     module: "esnext",
+    //     jsx: undefined,
+    //     skipLibCheck: true,
+    //     lib: ["dom", "es6"],
+    //     declaration: true,
+    //     sourceMap: true,
+    //     esModuleInterop: true,
+    //     allowSyntheticDefaultImports: true
+    //     // experimentalDecorators: true,
+    //     // removeComments: true,
+    //     // noImplicitAny: false,
+    //     // noImplicitThis: true,
+    //     // noImplicitReturns: true,
+    //     // noFallthroughCasesInSwitch: true,
+    //   },
+    //   exclude: ["node_modules"],
+    //   includes: ["./src"]
+    // };
+
     const package = {
       name: this.answers.name,
       description: this.answers.description,
@@ -89,7 +96,7 @@ module.exports = {
         // { "@babel/plugin-proposal-decorators": "^7.4.4" },
         // { "@babel/plugin-proposal-object-rest-spread": "^7.3.4" },
         // { "@babel/preset-env": "^7.3.4" },
-        { lodash: "^4.17.15" }
+        // { lodash: "^4.17.15" }
         // { rollup: "^1.27.5" },
         // { "rollup-plugin-terser": "^5.1.2" },
         // { "rollup-plugin-cleanup": "^3.1.1" },
@@ -183,15 +190,15 @@ module.exports = {
     }
 
     if (this.answers.type === "tsx") {
-      tsconfig.compilerOptions.jsx = "react";
+      // tsconfig.compilerOptions.jsx = "react";
       // rollupConfig.input = "./src/index.tsx";
       package.devDependencies.push(
         { "@types/hoist-non-react-statics": "^3.3.1" },
         { "@types/react": "^16.8.5" },
         { "@types/react-dom": "^16.8.2" },
         { react: "*" },
-        { "react-dom": "*" },
-        { "tslint-react": "^3.6.0" }
+        { "react-dom": "*" }
+        // { "tslint-react": "^3.6.0" }
       );
       package.peerDependencies.push({ react: "*" }, { "react-dom": "*" });
     } else if (this.answers.type === "ts") {
@@ -261,7 +268,7 @@ module.exports = {
     }
 
     if (this.answers.tests) {
-      tsconfig.includes.push("./__tests__");
+      // tsconfig.includes.push("./__tests__");
       package.scripts.push({ test: "jest" });
       package.devDependencies.push({ jest: "^24.1.0" });
       if (this.answers.type === "ts") {
@@ -378,7 +385,7 @@ module.exports = {
     });
 
     return {
-      tsconfig: serializeTSConfig(tsconfig),
+      tsconfig: tsconfigConfig ? tsconfigConfig.tsconfig : "",
       package: serializePackage(package),
       rollup: rollupConfig.rollup,
       eslint: eslintConfig ? eslintConfig.eslint : "",
