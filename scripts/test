@@ -40,7 +40,12 @@ const spawnProcess = (message, command, args, options) => {
 };
 
 const removeTmpDirectory = async () => {
-  await spawnProcess("Cleaning up", "rm", ["-rf", "tmp"]);
+  try {
+    await spawnProcess("Cleaning up", "rm", ["-rf", "tmp"]);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 };
 
 const getPackagePath = type => {
@@ -48,53 +53,78 @@ const getPackagePath = type => {
 };
 
 const createPackage = async type => {
-  const packagePath = getPackagePath(type);
-  await spawnProcess("Creating package: " + packagePath, "node", [
-    "cli",
-    packagePath,
-    "--name",
-    "test-package-" + type,
-    "--silent",
-    "--type",
-    type
-  ]);
+  try {
+    const packagePath = getPackagePath(type);
+    await spawnProcess("Creating package: " + packagePath, "node", [
+      "cli",
+      packagePath,
+      "--name",
+      "test-package-" + type,
+      "--silent",
+      "--type",
+      type
+    ]);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 };
 
 const lintPackage = async type => {
-  const packagePath = getPackagePath(type);
-  await spawnProcess("Linting package: " + packagePath, "yarn", ["lint"], {
-    cwd: packagePath
-  });
+  try {
+    const packagePath = getPackagePath(type);
+    await spawnProcess("Linting package: " + packagePath, "yarn", ["lint"], {
+      cwd: packagePath
+    });
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 };
 
 const buildPackage = async type => {
-  const packagePath = getPackagePath(type);
-  await spawnProcess("Building package: " + packagePath, "yarn", ["build"], {
-    cwd: packagePath
-  });
+  try {
+    const packagePath = getPackagePath(type);
+    await spawnProcess("Building package: " + packagePath, "yarn", ["build"], {
+      cwd: packagePath
+    });
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 };
 
 const testPackage = async type => {
-  const packagePath = getPackagePath(type);
-  await spawnProcess("Testing package: " + packagePath, "yarn", ["test"], {
-    cwd: packagePath
-  });
+  try {
+    const packagePath = getPackagePath(type);
+    await spawnProcess("Testing package: " + packagePath, "yarn", ["test"], {
+      cwd: packagePath
+    });
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 };
 
 const startTest = async () => {
-  await removeTmpDirectory();
-  const packageTypes = ["js", "jsx", "ts", "tsx"];
-  for (const type of packageTypes) {
-    const packagePath = getPackagePath(type);
-    foldStart(packagePath);
-    await createPackage(type);
-    await lintPackage(type);
-    await buildPackage(type);
-    await testPackage(type);
-    foldEnd(packagePath);
+  try {
+    await removeTmpDirectory();
+    const packageTypes = ["js", "jsx", "ts", "tsx"];
+    for (const type of packageTypes) {
+      const packagePath = getPackagePath(type);
+      foldStart(packagePath);
+      await createPackage(type);
+      await lintPackage(type);
+      await buildPackage(type);
+      await testPackage(type);
+      foldEnd(packagePath);
+    }
+    await removeTmpDirectory();
+    console.log("✓ Test successfully passed");
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
   }
-  await removeTmpDirectory();
-  console.log("✓ Test successfully passed");
 };
 
 startTest();
