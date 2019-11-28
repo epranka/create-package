@@ -139,7 +139,7 @@ module.exports = [
   },
   {
     name: "repository",
-    message: "Respository URL",
+    message: "Repository URL",
     default: getRepositoryURL()
   }
 ];

@@ -26,7 +26,8 @@
 - Silent mode
 - Package manager selection (yarn or npm)
 - Choices of ES, CJS, UMD modules and all together
-- Rollup bundler
+- RollUp bundler
+- Linting
 - Tests
 - Semantic Release
 - README template with badges
@@ -35,7 +36,7 @@
 
 ## Create package
 
-1. With package runners
+To create package once, package runner is recommended
 
 ```bash
 $ npx @epranka/create-package my-package
@@ -45,7 +46,7 @@ $ npx @epranka/create-package my-package
 $ yarn create @epranka/package my-package
 ```
 
-2. Install globally
+If you want to create packages later, install and use this package as follows
 
 ```bash
 $ npm install -g @epranka/create-package
@@ -60,11 +61,61 @@ $ create-package my-package
 
 ```
 
-If automated semantic releases are selected, package generation will take longer
+You will be asked some questions about package
+
+```
+@epranka/create-package
+✨ Generating package in my-package
+? Package name my-package
+? Package description My cat's meow package
+? Package type React Typescript (TSX)
+? Full name of package author Edvinas Pranka
+? Email of package author (public) epranka@gmail.com
+? Select license ISC
+? Choose the package manager Yarn
+? Build to UMD module for browsers (CommonJS is default) ? No
+? Build to ES Module ? Yes
+? Use unit tests ? Yes
+? Use automatic semantic releases ? Yes
+? Use Travis ? Yes
+? Repository URL https://github.com/epranka/create-package
+```
+
+If automated semantic releases are selected, package generation will take longer and you will be prompted for semantic release options
+
+When your package are generated your entry point is in `./src/` directory. If _Use unit tests_ are selected, tests can be found in `./__tests__` directory
+
+In your package root directory you can run following commands
+
+To build package
+
+```
+  $ yarn build    // or npm run build
+```
+
+To watch changes and build
+
+```
+  $ yarn watch    // or npm run watch
+```
+
+To lint package
+
+```
+  $ yarn lint     // or npm run lint
+```
+
+If _Use unit tests_ are selected, test package
+
+```
+  $ yarn test     // npm run test
+```
 
 ## CLI Help
 
 ```
+@epranka/create-package
+
 Usage:
   $ create-package [out-dir]
 
@@ -75,66 +126,121 @@ For more info, run any command with the `--help` flag:
   $ create-package --help
 
 Options:
-  -i, --info             Print out debugging information relating to the local environment
-  -s, --silent           Silent mode. Create package without user interaction
-  --name <name>          Name of the package
-  --description <name>   Description of the package
-  --author <fullname>    Author of package <fullname>
-  --email <email>        <email> of author
-  --mit                  MIT license. Default is ISC
-  --umd <GlobalName>     Build UMD module with <GlobalName>
-  --unlicensed           Unlicensed. This option overrides --mit option
-  --no-private           No private:true property in package.json (default: true)
-  --no-es                Don't build ES Module (default: true)
-  --no-travis            Don't use travis ci. (default: true)
-  --no-tests             Don't use tests (default: true)
-  --no-semantic-release  Don't use semantic release (default: true)
-  --npm                  Use NPM package manager. Default is YARN
-  --verbose              Show debug logs
-  -h, --help             Display this message
-  -v, --version          Display version number
+  -i, --info                     Print out debugging information relating to the local environment
+  -s, --silent                   Silent mode. Create package without user interaction
+  --name <name>                  Name of the package
+  --description <name>           Description of the package
+  --author <fullname>            Author of package <fullname>
+  --email <email>                <email> of author
+  --npm                          Use NPM package manager. Default is YARN
+  --mit                          MIT license. Default is ISC
+  --umd <GlobalName>             Build UMD module with <GlobalName>
+  --type <ts|tsx|js|jsx>         Type of package, one of TS, TSX, JS, JSX. Default is TS
+  --unlicensed                   Unlicensed. This option overrides --mit option
+  --travis                       Use Travis ci
+  --semantic-release             Use semantic release
+  --no-private                   No private:true property in package.json (default: true)
+  --no-es                        Don't build ES Module (default: true)
+  --no-tests                     Don't use tests (default: true)
+  --skip-semantic-release-setup  Skip semantic release setup
+  --verbose                      Show debug logs
+  -h, --help                     Display this message
+  -v, --version                  Display version number
+
 ```
 
-## Structure
+## JS package structure
 
-Created package will have following structure (if tests, Semantic Release and Travis is selected)
+Created **JS** package will have following structure (if Use tests, Semantic Release and Travis is selected)
 
 ```
 my-package
 ├── src
-│   └── index.tsx
+│   └── index.js        // your entry point
 ├── __tests__
-│   └── index.spec.tsx
+│   └── index.spec.js   // tests goes here
 ├── node_modules
+├── babel.config.js
+├── .eslintrc
+├── .gitignore
 ├── jest.config.js
 ├── LICENSE
 ├── package.json
 ├── README.md
+├── .releaserc
 ├── rollup.config.js
-├── tsconfig.json
-├── tslint.json
-└── yarn.lock
+└── .travis.yml
 ```
 
-## Build
+## JSX package structure
 
-```bash
-  # to build
+Created **JSX** package will have following structure (if Use tests, Semantic Release and Travis is selected)
 
-  $ npm run build
+```
+my-package
+├── src
+│   └── index.jsx         // your entry point
+├── __tests__
+│   └── index.spec.jsx    //  tests goes here
+├── node_modules
+├── babel.config.js
+├── .eslintrc
+├── .gitignore
+├── jest.config.js
+├── LICENSE
+├── package.json
+├── README.md
+├── .releaserc
+├── rollup.config.js
+└── .travis.yml
+```
 
-  # or
+## TS package structure
 
-  $ yarn build
+Created **TS** package will have following structure (if Use tests, Semantic Release and Travis is selected)
 
+```
+my-package
+├── src
+│   └── index.ts          // your entry point
+├── __tests__
+│   └── index.spec.ts     // tests goes here
+├── node_modules
+├── babel.config.js
+├── .gitignore
+├── jest.config.js
+├── LICENSE
+├── package.json
+├── README.md
+├── .releaserc
+├── rollup.config.js
+├── .travis.yml
+├── tsconfig.json
+└── tslint.json
+```
 
-  # to watch changes
+## TSX package structure
 
-  $ npm run watch
+Created **TSX** package will have following structure (if Use tests, Semantic Release and Travis is selected)
 
-  # or
-
-  $ yarn watch
+```
+my-package
+├── src
+│   └── index.tsx          // your entry point
+├── __tests__
+│   └── index.spec.tsx     // tests goes here
+├── node_modules
+├── babel.config.js
+├── .gitignore
+├── jest.config.js
+├── LICENSE
+├── package.json
+├── README.md
+├── .releaserc
+├── rollup.config.js
+├── .travis.yml
+├── tsconfig.json
+└── tslint.json
 ```
 
 ## Badge
