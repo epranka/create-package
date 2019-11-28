@@ -18,6 +18,7 @@ const umdName = options.umd;
 const esBuild = options.es;
 const useTravis = options.travis;
 const useTests = options.tests;
+const type = options.type || "ts";
 let useSemanticRelease = options["semantic-release"];
 if (options.semanticRelease === false) {
   useSemanticRelease = false;
@@ -57,7 +58,7 @@ module.exports = [
       }
     ],
     type: "list",
-    default: "ts"
+    default: type
   },
   {
     name: "author",

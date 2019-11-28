@@ -37,6 +37,7 @@ cli
   .option("--email <email>", "<email> of author")
   .option("--mit", "MIT license. Default is ISC")
   .option("--umd <GlobalName>", "Build UMD module with <GlobalName>")
+  .option("--type <ts|tsx|js|jsx>", "Type of package, one of TS, TSX, JS, JSX")
   .option("--unlicensed", "Unlicensed. This option overrides --mit option")
   .option("--no-private", "No private:true property in package.json")
   .option("--no-es", "Don't build ES Module")

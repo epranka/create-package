@@ -34,6 +34,14 @@ module.exports = {
     const isTypescript = type === "tsx" || type === "ts";
     const isReact = type === "tsx" || type === "jsx";
 
+    if (!["ts", "tsx", "js", "jsx"].includes(type)) {
+      console.error(
+        this
+          .chalk`{red No type ${type} is supported. Supported: js, jsx, ts, tsx}`
+      );
+      process.exit(1);
+    }
+
     if (this.answers.umd) {
       if (!this.answers.umd_name || !this.answers.umd_name.trim()) {
         console.error(
