@@ -1,22 +1,67 @@
 #!/usr/bin/env node
 const spawn = require("cross-spawn");
-const debug = !process.argv.includes("--no-debug");
+const ora = require("ora");
 
-const removeTmpDirectory = () => {
-  console.log("Removing tmp directory");
-  spawn.sync("rm", ["-rf", "tmp"]);
+const isTravis = "TRAVIS" in process.env && "CI" in process.env;
+
+const foldStart = type => {
+  if (isTravis) {
+    console.log("travis_fold:start:" + type);
+  }
+};
+
+const foldEnd = type => {
+  if (isTravis) {
+    console.log("travis_fold:end:" + type);
+  }
+};
+
+const spawnProcess = (message, command, args, options) => {
+  return new Promise(resolve => {
+    const spinner = ora(message + "...").start();
+    const pr = spawn.spawn(command, args, options);
+    pr.stdout.on("data", data => {});
+    let stderr = "";
+    pr.stderr.on("data", data => {
+      stderr += data.toString();
+    });
+    pr.on("close", code => {
+      if (code !== 0) {
+        console.error();
+        console.error(stderr);
+        spinner.stopAndPersist({
+          symbol: "✗",
+          text: message
+        });
+        console.log("✗ Test failed");
+        return process.exit(code);
+      }
+      spinner.stopAndPersist({
+        symbol: "✓",
+        text: message
+      });
+      resolve();
+    });
+  });
+};
+
+const removeTmpDirectory = async () => {
+  try {
+    await spawnProcess("Cleaning up", "rm", ["-rf", "tmp"]);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
 };
 
 const getPackagePath = type => {
   return "tmp/child-package-" + type;
 };
 
-const createPackage = type => {
-  const packagePath = getPackagePath(type);
-  console.log("Creating package for test: " + packagePath);
-  const result = spawn.sync(
-    "node",
-    [
+const createPackage = async type => {
+  try {
+    const packagePath = getPackagePath(type);
+    await spawnProcess("Creating package: " + packagePath, "node", [
       "cli",
       packagePath,
       "--name",
@@ -24,69 +69,67 @@ const createPackage = type => {
       "--silent",
       "--type",
       type
-    ],
-    {
-      stdio: debug ? "inherit" : false
+    ]);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
+
+const lintPackage = async type => {
+  try {
+    const packagePath = getPackagePath(type);
+    await spawnProcess("Linting package: " + packagePath, "yarn", ["lint"], {
+      cwd: packagePath
+    });
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
+
+const buildPackage = async type => {
+  try {
+    const packagePath = getPackagePath(type);
+    await spawnProcess("Building package: " + packagePath, "yarn", ["build"], {
+      cwd: packagePath
+    });
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
+
+const testPackage = async type => {
+  try {
+    const packagePath = getPackagePath(type);
+    await spawnProcess("Testing package: " + packagePath, "yarn", ["test"], {
+      cwd: packagePath
+    });
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+};
+
+const startTest = async () => {
+  try {
+    await removeTmpDirectory();
+    const packageTypes = ["js", "jsx", "ts", "tsx"];
+    for (const type of packageTypes) {
+      foldStart(type);
+      await createPackage(type);
+      await lintPackage(type);
+      await buildPackage(type);
+      await testPackage(type);
+      foldEnd(type);
     }
-  );
-  if (result.status !== 0) {
-    console.error(`Error when creating package: ${packagePath}`);
-    removeTmpDirectory();
+    await removeTmpDirectory();
+    console.log("✓ Test successfully passed");
+  } catch (err) {
+    console.error(err);
     process.exit(1);
   }
 };
 
-const lintPackage = type => {
-  const packagePath = getPackagePath(type);
-  console.log("Linting package: " + packagePath);
-  const result = spawn.sync("yarn", ["lint"], {
-    cwd: packagePath,
-    stdio: debug ? "inherit" : false
-  });
-  if (result.status !== 0) {
-    console.error(`Error when linting package: ${packagePath}`);
-    removeTmpDirectory();
-    process.exit(1);
-  }
-};
-
-const buildPackage = type => {
-  const packagePath = getPackagePath(type);
-  console.log("Building package: " + packagePath);
-  const result = spawn.sync("yarn", ["build"], {
-    cwd: packagePath,
-    stdio: debug ? "inherit" : false
-  });
-  if (result.status !== 0) {
-    console.error(`Error when building package: ${packagePath}`);
-    removeTmpDirectory();
-    process.exit(1);
-  }
-};
-
-const testPackage = type => {
-  const packagePath = getPackagePath(type);
-  console.log("Testing package: " + packagePath);
-  const result = spawn.sync("yarn", ["test"], {
-    cwd: packagePath,
-    stdio: debug ? "inherit" : false
-  });
-  if (result.status !== 0) {
-    console.error(`Error when testing package: ${packagePath}`);
-    removeTmpDirectory();
-    process.exit(1);
-  }
-};
-
-console.log("Starting test...");
-removeTmpDirectory();
-const packageTypes = ["js", "jsx", "ts", "tsx"];
-console.log("Creating packages...");
-for (const type of packageTypes) {
-  createPackage(type);
-  lintPackage(type);
-  buildPackage(type);
-  testPackage(type);
-}
-removeTmpDirectory();
-console.log("Test successfully passed");
+startTest();
