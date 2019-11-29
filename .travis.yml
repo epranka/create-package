@@ -13,4 +13,7 @@ jobs:
         on:
           branch:
             - master
+            - next
+            - "next-major"
             - beta
+            - alpha
