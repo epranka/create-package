@@ -23,7 +23,10 @@ const createTravisConfig = ({ useSemanticRelease }) => {
           deploy: {
             provider: "script",
             skip_cleanup: true,
-            script: "npx semantic-release"
+            script: "npx semantic-release",
+            on: {
+              branch: ["master", "next", "next-major", "beta", "alpha"]
+            }
           }
         }
       ]
@@ -33,20 +36,6 @@ const createTravisConfig = ({ useSemanticRelease }) => {
     scripts,
     travis: formatyaml(config)
   };
-  //   return `language: node_js
-  // os: linux
-
-  // jobs:
-  // include:
-  //     # Define the release stage that runs semantic-release
-  //     - stage: release
-  //     name: "Releasing"
-  //     node_js: lts/*
-  //     deploy:
-  //         provider: script
-  //         skip_cleanup: true
-  //         script: npx semantic-release
-  //   `;
 };
 
 module.exports = createTravisConfig;
