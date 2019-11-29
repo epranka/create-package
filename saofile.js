@@ -11,6 +11,8 @@ const createJestConfig = require("./utils/createJestConfig");
 const createBabelConfig = require("./utils/createBabelConfig");
 const createSemanticReleaseConfig = require("./utils/createSemanticReleaseConfig");
 const createTravisConfig = require("./utils/createTravisConfig");
+const spinner = require("./utils/spinner");
+const createProcess = require("./utils/createProcess");
 const prompts = require("./prompts");
 
 module.exports = {
@@ -301,53 +303,64 @@ module.exports = {
   async completed() {
     const { cliOptions } = this.sao.opts;
     const isSilentMode = cliOptions.silent;
-    const repository = this.answers.repository;
     const useSemanticRelease = this.answers.useSemanticRelease;
     const skipSemanticReleaseSetup = cliOptions.skipSemanticReleaseSetup;
     const pm = this.answers.pm;
-    this.gitInit();
-    if (repository && repository.trim()) {
-      spawn.sync("git", ["remote", "add", "origin", repository], {
-        cwd: this.outDir,
-        stdio: "inherit"
-      });
-    }
-    await this.npmInstall({ npmClient: pm });
+
+    await spinner(this.gitInit(), {
+      startMessage: "Initializing git...",
+      endMessage: "Initialized git",
+      failMessage: "Failed to initialize git"
+    });
+    await spinner(createProcess(pm, ["install"], { cwd: this.outDir }), {
+      startMessage: "Installing packages with " + pm + "...",
+      endMessage: "Package installed with " + pm,
+      failMessage: "Failed to install packages with " + pm
+    });
     if (!skipSemanticReleaseSetup && !isSilentMode && useSemanticRelease) {
-      // TODO console log
-      // install semantic release cli
-      let options = ["add", "semantic-release-cli"];
-      if (pm === "npm") {
-        options[0] = "install";
-      }
-      spawn.sync(pm, options, {
-        cwd: this.outDir,
-        stdio: "inherit"
-      });
-      // Setup semantic release
+      await spinner(
+        createProcess(
+          pm,
+          [pm === "npm" ? "install" : "add", "semantic-release-cli"],
+          { cwd: this.outDir }
+        ),
+        {
+          startMessage: "Installing semantic-release-cli...",
+          endMessage: "Installed semantic-release-cli",
+          failMessage: "Failed to install semantic-release-cli"
+        }
+      );
+      console.log("✓ Prepared semantic release for setup");
       spawn.sync("./node_modules/.bin/semantic-release-cli", ["setup"], {
         cwd: this.outDir,
         stdio: "inherit"
       });
-      // Remove semantic release cli
-      options[0] = "remove";
-      if (pm === "npm") {
-        options[0] = "uninstall";
-      }
-      spawn.sync(pm, options, {
-        cwd: this.outDir,
-        stdio: "inherit"
-      });
+      await spinner(
+        createProcess(
+          pm,
+          [pm === "npm" ? "uninstall" : "remove", "semantic-release-cli"],
+          { cwd: this.outDir }
+        ),
+        {
+          startMessage: "Removing semantic-release-cli",
+          endMessage: "Removed semantic-release-cli",
+          failMessage: "Failed to remove semantic-release-cli"
+        }
+      );
     }
 
     if (!skipSemanticReleaseSetup && !isSilentMode && useSemanticRelease) {
-      // Setup commitizen
-      spawn.sync(
-        "./node_modules/.bin/commitizen",
-        ["init", "cz-conventional-changelog"],
+      await spinner(
+        createProcess(
+          "./node_modules/.bin/commitizen",
+          ["init", "cz-conventional-changelog"],
+          { cwd: this.outDir }
+        ),
         {
-          cwd: this.outDir,
-          stdio: "inherit"
+          startMessage:
+            "Initializing commitizen (this may take a bit longer)...",
+          endMessage: "Initialized commitizen",
+          failMessage: "Failed to initiate commitizen"
         }
       );
     }

@@ -60,7 +60,7 @@ cli
     console.log(chalk`✨ Generating package in {cyan ${outDir}}`);
 
     const { verbose, silent } = cliOptions;
-    const logLevel = verbose ? 4 : 2;
+    const logLevel = verbose ? 4 : 0;
     sao({ generator, outDir, logLevel, cliOptions, yes: silent })
       .run()
       .catch(err => {
