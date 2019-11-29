@@ -8,18 +8,32 @@ const createSemanticReleaseConfig = () => {
   ];
   const devDependencies = [
     {
-      "semantic-release": "^15.13.31",
+      "semantic-release": "^16.0.0-beta.38",
       "@semantic-release/changelog": "^3.0.6",
-      "@semantic-release/commit-analyzer": "^6.3.3",
-      "@semantic-release/git": "^7.0.18",
-      "@semantic-release/release-notes-generator": "^7.3.4",
-      "@semantic-release/npm": "^5.3.4",
+      "@semantic-release/commit-analyzer": "^7.0.0-beta.6",
+      "@semantic-release/git": "^7.1.0-beta.9",
+      "@semantic-release/release-notes-generator": "^7.3.5",
+      "@semantic-release/npm": "^6.0.0-beta.5",
       commitizen: "^4.0.3"
     }
   ];
 
   const config = {
     ci: "false",
+    branches: [
+      "+([0-9])?(.{+([0-9]),x}).x",
+      "master",
+      "next",
+      "next-major",
+      {
+        name: "beta",
+        prerelease: true
+      },
+      {
+        name: "alpha",
+        prerelease: true
+      }
+    ],
     plugins: [
       [
         "@semantic-release/commit-analyzer",
