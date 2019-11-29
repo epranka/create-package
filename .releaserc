@@ -1,6 +1,6 @@
 {
   "ci": "false",
-  "branches": [
+  "branch": [
     "master",
     {
       "name": "develop",
