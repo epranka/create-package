@@ -13,4 +13,4 @@ jobs:
         on:
           branch:
             - master
-            - develop
+            - beta

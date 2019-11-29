@@ -1,12 +1,5 @@
 {
   "ci": "false",
-  "branch": [
-    "master",
-    {
-      "name": "develop",
-      "prerelease": "rc"
-    }
-  ],
   "plugins": [
     [
       "@semantic-release/commit-analyzer",
