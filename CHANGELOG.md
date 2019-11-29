@@ -1,3 +1,10 @@
+## [4.4.2](https://github.com/epranka/create-package/compare/v4.4.1...v4.4.2) (2019-11-29)
+
+
+### Bug Fixes
+
+* moved json2yml from dev to dependencies ([69fe82d](https://github.com/epranka/create-package/commit/69fe82d5370a288a184944ace7d3113c9df0dfaf))
+
 ## [4.4.1](https://github.com/epranka/create-package/compare/v4.4.0...v4.4.1) (2019-11-28)
 
 
