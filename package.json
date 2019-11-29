@@ -21,6 +21,7 @@
     "sao": "^1.7.0",
     "semver": "^6.3.0",
     "superb": "^4.0.0",
+    "ora": "^4.0.3",
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
@@ -30,7 +31,6 @@
     "@semantic-release/npm": "^5.3.4",
     "@semantic-release/release-notes-generator": "^7.3.4",
     "cz-conventional-changelog": "^3.0.2",
-    "ora": "^4.0.3",
     "semantic-release": "^15.13.31"
   },
   "bin": "./cli.js",
