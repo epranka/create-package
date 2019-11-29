@@ -1,3 +1,27 @@
+# [5.0.0](https://github.com/epranka/create-package/compare/v4.4.4...v5.0.0) (2019-11-29)
+
+
+### Bug Fixes
+
+* changed "branches" to "branch" ([7541995](https://github.com/epranka/create-package/commit/7541995322a7db3a952002ada2a8a4b4ae276160))
+* fixed configuration files ([8e2d09e](https://github.com/epranka/create-package/commit/8e2d09e30ee1abf9bcf8a7beaaa91ffe0d5ba3d3))
+
+
+### Build System
+
+* **travis:** changed travis configuration filed ([9c8b843](https://github.com/epranka/create-package/commit/9c8b843c1557766b46a4d852330912607e4342eb))
+
+
+### Features
+
+* updated generated package travis and semantic-release configuration ([0811210](https://github.com/epranka/create-package/commit/081121044f9bf58aef49a085534c321025cb05d8))
+* **build:** beta branch ([c434d00](https://github.com/epranka/create-package/commit/c434d009f307613ad0c255007969d073e1914f2d))
+
+
+### BREAKING CHANGES
+
+* **travis:** Added release candidates on develop branch
+
 # [5.0.0-beta.2](https://github.com/epranka/create-package/compare/v5.0.0-beta.1@beta...v5.0.0-beta.2@beta) (2019-11-29)
 
 
