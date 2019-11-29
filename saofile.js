@@ -157,7 +157,7 @@ module.exports = {
 
     let travisConfig;
     if (useTravis) {
-      travisConfig = createTravisConfig();
+      travisConfig = createTravisConfig({ useSemanticRelease });
       package.scripts.push(...travisConfig.scripts);
     }
 
@@ -301,10 +301,17 @@ module.exports = {
   async completed() {
     const { cliOptions } = this.sao.opts;
     const isSilentMode = cliOptions.silent;
+    const repository = this.answers.repository;
     const useSemanticRelease = this.answers.useSemanticRelease;
     const skipSemanticReleaseSetup = cliOptions.skipSemanticReleaseSetup;
     const pm = this.answers.pm;
     this.gitInit();
+    if (repository && repository.trim()) {
+      spawn.sync("git", ["remote", "add", "origin", repository], {
+        cwd: this.outDir,
+        stdio: "inherit"
+      });
+    }
     await this.npmInstall({ npmClient: pm });
     if (!skipSemanticReleaseSetup && !isSilentMode && useSemanticRelease) {
       // TODO console log

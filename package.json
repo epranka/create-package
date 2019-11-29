@@ -17,9 +17,10 @@
     "envinfo": "^7.4.0",
     "git-url-parse": "^11.1.2",
     "js-beautify": "^1.10.2",
-    "sao": "^1.7.0",
-    "superb": "^4.0.0",
     "json2yaml": "^1.1.0",
+    "sao": "^1.7.0",
+    "semver": "^6.3.0",
+    "superb": "^4.0.0",
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {

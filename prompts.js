@@ -165,6 +165,9 @@ module.exports = [
         )(value);
       } else return true;
     },
-    default: typeof repository !== "undefined" ? repository : getRepositoryURL()
+    default:
+      typeof repository !== "undefined"
+        ? repository
+        : getRepositoryURL() || undefined
   }
 ];

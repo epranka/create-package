@@ -1,6 +1,8 @@
 const formatyaml = require("./formatyaml");
+const getNodeVersion = require("./getNodeVersion");
 
-const createTravisConfig = () => {
+const createTravisConfig = ({ useSemanticRelease }) => {
+  const nodeVersion = getNodeVersion();
   const scripts = [
     {
       "travis-deploy-once": "travis-deploy-once"
@@ -9,12 +11,15 @@ const createTravisConfig = () => {
   const config = {
     language: "node_js",
     os: "linux",
-    jobs: {
+    node_js: [nodeVersion ? nodeVersion : "lts/*"]
+  };
+  if (useSemanticRelease) {
+    config.jobs = {
       include: [
         {
           stage: "Release",
           name: "Releasing",
-          node_js: "lts/*",
+          node_js: nodeVersion ? nodeVersion : "lts/*",
           deploy: {
             provider: "script",
             skip_cleanup: true,
@@ -22,8 +27,8 @@ const createTravisConfig = () => {
           }
         }
       ]
-    }
-  };
+    };
+  }
   return {
     scripts,
     travis: formatyaml(config)
