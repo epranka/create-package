@@ -1,3 +1,10 @@
+# [5.0.0-beta.2](https://github.com/epranka/create-package/compare/v5.0.0-beta.1@beta...v5.0.0-beta.2@beta) (2019-11-29)
+
+
+### Features
+
+* updated generated package travis and semantic-release configuration ([0811210](https://github.com/epranka/create-package/commit/081121044f9bf58aef49a085534c321025cb05d8))
+
 # [5.0.0-beta.1](https://github.com/epranka/create-package/compare/v4.4.4...v5.0.0-beta.1@beta) (2019-11-29)
 
 
