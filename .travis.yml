@@ -10,3 +10,6 @@ jobs:
         provider: "script"
         skip_cleanup: true
         script: "npx semantic-release"
+      on:
+        branch: -master
+          -develop
