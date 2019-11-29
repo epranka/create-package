@@ -111,6 +111,27 @@ If _Use unit tests_ are selected, test package
   $ yarn test     // npm run test
 ```
 
+## Publish lock
+
+When the package created, the **package.json** file has a **private** property set to _true_. It prevents accidentally publishing the package. Then you are ready to publish, just remove **private** property from the **package.json** file.
+
+## Silent mode
+
+You can create a package without user interaction using the _--silent_ option. Pass package values along with the command. See section [CLI Help](#cli-help) below
+
+```
+  $ create-package my-package --name my-package --description "My cat's meow package" --type tsx --author "Edvinas Pranka" --email "epranka@gmail.com" --license ISC --travis
+```
+
+If you choose _--semantic-release_ option in silent mode, you will have to setup it after the package has been created. Use **semantic-release-cli** in the root of the package
+
+```
+  $ npm -g install semantic-release-cli
+  $ semantic-release-cli setup
+```
+
+After setup, you can uninstall the **semantic-release-cli** package
+
 ## CLI Help
 
 ```

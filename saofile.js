@@ -349,7 +349,13 @@ module.exports = {
       );
     }
 
-    if (!skipSemanticReleaseSetup && !isSilentMode && useSemanticRelease) {
+    if (isSilentMode && useSemanticRelease) {
+      console.log(
+        "- Semantic release setup was skipped, because of the silent mode. You will have to do it manually. See more on https://github.com/epranka/create-package#silent-mode"
+      );
+    }
+
+    if (!skipSemanticReleaseSetup && useSemanticRelease) {
       await spinner(
         createProcess(
           "./node_modules/.bin/commitizen",
