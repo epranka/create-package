@@ -1,3 +1,5 @@
+## [4.4.3](https://github.com/epranka/create-package/compare/v4.4.2...v4.4.3) (2019-11-29)
+
 ## [4.4.2](https://github.com/epranka/create-package/compare/v4.4.1...v4.4.2) (2019-11-29)
 
 
