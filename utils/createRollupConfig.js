@@ -30,7 +30,7 @@ const createRollupConfig = ({
     }
   ];
   if (isTypescript) {
-    devDependencies.push({ "rollup-plugin-typescript2": "^0.25.2" });
+    devDependencies.push({ "rollup-plugin-typescript2": "^0.26.0" });
   }
   const imports = [
     `import pkg from "./package.json";`,
