@@ -1,3 +1,10 @@
+# [5.0.0-beta.3](https://github.com/epranka/create-package/compare/v5.0.0-beta.2@beta...v5.0.0-beta.3@beta) (2020-02-24)
+
+
+### Bug Fixes
+
+* **dependencies:** fixed build error ([b22ece7](https://github.com/epranka/create-package/commit/b22ece79d38933ff7910860105c26a774d5cd067)), closes [#11](https://github.com/epranka/create-package/issues/11)
+
 # [5.0.0-beta.2](https://github.com/epranka/create-package/compare/v5.0.0-beta.1@beta...v5.0.0-beta.2@beta) (2019-11-29)
 
 
