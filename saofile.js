@@ -146,7 +146,7 @@ module.exports = {
     }
 
     if (isTypescript) {
-      package.devDependencies.push({ typescript: "^3.3.3333" });
+      package.devDependencies.push({ typescript: "^3.8.2" });
       package.types = "lib/index.d.ts";
 
       if (isReact) {

@@ -34,6 +34,12 @@
 - Continuous integration: Travis
 - License selection (ISC, MIT, UNLICENSED)
 
+<br />
+
+![epranka/create-package animation](https://s5.gifyu.com/images/create-package.gif)
+
+<br />
+
 ## Create package
 
 To create package once, package runner is recommended

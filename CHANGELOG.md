@@ -1,7 +1,19 @@
+## [5.0.1-beta.1](https://github.com/epranka/create-package/compare/v5.0.0...v5.0.1-beta.1@beta) (2020-02-24)
+
+
+### Bug Fixes
+
+* **dependencies:** fixed build error ([b22ece7](https://github.com/epranka/create-package/commit/b22ece79d38933ff7910860105c26a774d5cd067)), closes [#11](https://github.com/epranka/create-package/issues/11)
+
+# [5.0.0-beta.3](https://github.com/epranka/create-package/compare/v5.0.0-beta.2@beta...v5.0.0-beta.3@beta) (2020-02-24)
+
 # [5.0.0](https://github.com/epranka/create-package/compare/v4.4.4...v5.0.0) (2019-11-29)
 
 
 ### Bug Fixes
+
+
+* **dependencies:** fixed build error ([b22ece7](https://github.com/epranka/create-package/commit/b22ece79d38933ff7910860105c26a774d5cd067)), closes [#11](https://github.com/epranka/create-package/issues/11)
 
 * changed "branches" to "branch" ([7541995](https://github.com/epranka/create-package/commit/7541995322a7db3a952002ada2a8a4b4ae276160))
 * fixed configuration files ([8e2d09e](https://github.com/epranka/create-package/commit/8e2d09e30ee1abf9bcf8a7beaaa91ffe0d5ba3d3))
