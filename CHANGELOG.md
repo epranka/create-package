@@ -1,3 +1,5 @@
+## [5.0.2](https://github.com/epranka/create-package/compare/v5.0.1...v5.0.2) (2020-08-21)
+
 ## [5.0.2-beta.1](https://github.com/epranka/create-package/compare/v5.0.1...v5.0.2-beta.1@beta) (2020-08-21)
 
 ## [5.0.1](https://github.com/epranka/create-package/compare/v5.0.0...v5.0.1) (2020-02-24)
