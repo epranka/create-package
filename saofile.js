@@ -4,7 +4,6 @@ const serializePackage = require("./utils/serializePackage");
 const createRollupConfig = require("./utils/createRollupConfig");
 const createTsConfig = require("./utils/createTsConfig");
 const createEsLintConfig = require("./utils/createEsLintConfig");
-const createTsLintConfig = require("./utils/createTsLintConfig");
 const createREADME = require("./utils/createREADME");
 const createLicenseConfig = require("./utils/createLicenseConfig");
 const createJestConfig = require("./utils/createJestConfig");
@@ -90,13 +89,13 @@ module.exports = {
       contributors: [],
       repository: repository
         ? {
-            url: repository
+            url: repository,
           }
         : undefined,
       license: "ISC",
       dependencies: [],
       devDependencies: [],
-      peerDependencies: []
+      peerDependencies: [],
     };
 
     const authorObject = [];
@@ -136,7 +135,7 @@ module.exports = {
       }
     } else {
       package.scripts.push({
-        test: 'echo \\"Warn: No test specified\\" && exit 0"'
+        test: 'echo \\"Warn: No test specified\\" && exit 0"',
       });
     }
 
@@ -169,7 +168,7 @@ module.exports = {
       umd: useUMD,
       umd_name: umdName,
       isReact,
-      isTypescript
+      isTypescript,
     });
     package.devDependencies.push(...rollupConfig.devDependencies);
 
@@ -190,18 +189,14 @@ module.exports = {
 
     const pmRun = pm === "yarn" ? "yarn" : "npm run";
 
-    let eslintConfig;
-    let tslintConfig;
+    const eslintConfig = createEsLintConfig({ isReact, isTypescript });
+    package.devDependencies.push(...eslintConfig.devDependencies);
     if (isTypescript) {
-      tslintConfig = createTsLintConfig();
-      package.devDependencies.push(...tslintConfig.devDependencies);
-      const ext = isReact ? "tsx" : "ts";
-      package.scripts.push({ lint: "tslint ./src/**/*." + ext });
+      const ext = isReact ? ".tsx,.ts,.jsx,.js" : ".ts,.js";
+      package.scripts.push({ lint: `eslint --ext ${ext} src/` });
     } else {
-      eslintConfig = createEsLintConfig({ isReact });
-      package.devDependencies.push(...eslintConfig.devDependencies);
-      const ext = isReact ? "jsx" : "js";
-      package.scripts.push({ lint: "eslint ./src/**/*." + ext });
+      const ext = isReact ? ".jsx,.jsx" : ".js";
+      package.scripts.push({ lint: `eslint --ext ${ext} src/` });
     }
 
     const readmeContent = createREADME({
@@ -217,7 +212,7 @@ module.exports = {
       useSemanticRelease,
       useUMD,
       umdName,
-      useEs
+      useEs,
     });
 
     return {
@@ -225,25 +220,24 @@ module.exports = {
       package: serializePackage(package),
       rollup: rollupConfig.rollup,
       eslint: eslintConfig ? eslintConfig.eslint : "",
-      tslint: tslintConfig ? tslintConfig.tslint : "",
       travis: travisConfig ? travisConfig.travis : "",
       jestContent: createJestConfig({ isTypescript }),
       babelrc: babelConfig.babelrc,
       licenseContent: licenseConfig.licenseContent,
       semanticrelease: semanticReleaseConfig.semanticrelease,
       readmeContent,
-      pmRun
+      pmRun,
     };
   },
   actions() {
     const name = this.answers && this.answers.name;
     const validation = validate(name || this.outFolder);
     validation.warnings &&
-      validation.warnings.forEach(warn => {
+      validation.warnings.forEach((warn) => {
         console.warn("Warning:", warn);
       });
     validation.errors &&
-      validation.errors.forEach(err => {
+      validation.errors.forEach((err) => {
         console.error("Error:", err);
       });
     validation.errors && validation.errors.length && process.exit(1);
@@ -264,13 +258,11 @@ module.exports = {
           "src/index_js": `type=="js"`,
           "src/index_jsx": `type=="jsx"`,
           _tsconfig_json: `type=="tsx" || type=="ts"`,
-          _tslint_json: `type=="tsx" || type=="ts"`,
-          _eslint_json: `type=="jsx" || type=="js"`,
           jest_config_js: "useTests",
           travis_yml: "useTravis",
-          releaserc: "useSemanticRelease"
-        }
-      }
+          releaserc: "useSemanticRelease",
+        },
+      },
     ];
 
     actions.push({
@@ -293,9 +285,8 @@ module.exports = {
         README_md: "README.md",
         _package_json: "package.json",
         _tsconfig_json: "tsconfig.json",
-        _tslint_json: "tslint.json",
-        _eslint_json: ".eslintrc"
-      }
+        _eslint_json: ".eslintrc.json",
+      },
     });
 
     return actions;
@@ -310,12 +301,12 @@ module.exports = {
     await spinner(this.gitInit(), {
       startMessage: "Initializing git...",
       endMessage: "Initialized git",
-      failMessage: "Failed to initialize git"
+      failMessage: "Failed to initialize git",
     });
     await spinner(createProcess(pm, ["install"], { cwd: this.outDir }), {
       startMessage: "Installing packages with " + pm + "...",
       endMessage: "Package installed with " + pm,
-      failMessage: "Failed to install packages with " + pm
+      failMessage: "Failed to install packages with " + pm,
     });
     if (!skipSemanticReleaseSetup && !isSilentMode && useSemanticRelease) {
       await spinner(
@@ -327,13 +318,13 @@ module.exports = {
         {
           startMessage: "Installing semantic-release-cli...",
           endMessage: "Installed semantic-release-cli",
-          failMessage: "Failed to install semantic-release-cli"
+          failMessage: "Failed to install semantic-release-cli",
         }
       );
       console.log("✓ Prepared semantic release for setup");
       spawn.sync("./node_modules/.bin/semantic-release-cli", ["setup"], {
         cwd: this.outDir,
-        stdio: "inherit"
+        stdio: "inherit",
       });
       await spinner(
         createProcess(
@@ -344,7 +335,7 @@ module.exports = {
         {
           startMessage: "Removing semantic-release-cli",
           endMessage: "Removed semantic-release-cli",
-          failMessage: "Failed to remove semantic-release-cli"
+          failMessage: "Failed to remove semantic-release-cli",
         }
       );
     }
@@ -366,9 +357,9 @@ module.exports = {
           startMessage:
             "Initializing commitizen (this may take a bit longer)...",
           endMessage: "Initialized commitizen",
-          failMessage: "Failed to initiate commitizen"
+          failMessage: "Failed to initiate commitizen",
         }
       );
     }
-  }
+  },
 };
