@@ -1,42 +1,46 @@
 const formatjson = require("./formatjson");
 
-const createEsLintConfig = ({ isReact }) => {
+const createEsLintConfig = ({ isReact, isTypescript }) => {
   const devDependencies = [
     {
-      eslint: "^6.7.1",
-      "babel-eslint": "^10.0.3"
-    }
+      eslint: "^7.7.0",
+    },
   ];
 
-  if (isReact) {
-    devDependencies.push({ "eslint-plugin-react": "^7.16.0" });
-  }
-
   const config = {
-    parser: "babel-eslint",
-    extends: ["eslint:recommended"],
     env: {
       browser: true,
-      node: true,
-      es6: true
+      es2020: true,
     },
+    extends: ["eslint:recommended"],
     parserOptions: {
-      sourceType: "module"
-    }
+      ecmaFeatures: {
+        jsx: isReact,
+      },
+      ecmaVersion: 11,
+      sourceType: "module",
+    },
+    plugins: [],
+    ignorePatterns: ["lib/"],
   };
 
   if (isReact) {
+    devDependencies.push({ "eslint-plugin-react": "^7.20.6" });
     config.extends.push("plugin:react/recommended");
-    config.settings = {
-      react: {
-        version: "detect"
-      }
-    };
+    config.plugins.push("react");
+  }
+
+  if (isTypescript) {
+    devDependencies.push({ "@typescript-eslint/eslint-plugin": "^3.9.1" });
+    devDependencies.push({ "@typescript-eslint/parser": "^3.9.1" });
+    config.parser = "@typescript-eslint/parser";
+    config.extends.push("plugin:@typescript-eslint/recommended");
+    config.plugins.push("@typescript-eslint");
   }
 
   return {
     devDependencies,
-    eslint: formatjson(config)
+    eslint: formatjson(config),
   };
 };
 

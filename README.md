@@ -188,7 +188,7 @@ my-package
 │   └── index.spec.js   // tests goes here
 ├── node_modules
 ├── babel.config.js
-├── .eslintrc
+├── .eslintrc.json
 ├── .gitignore
 ├── jest.config.js
 ├── LICENSE
@@ -211,7 +211,7 @@ my-package
 │   └── index.spec.jsx    //  tests goes here
 ├── node_modules
 ├── babel.config.js
-├── .eslintrc
+├── .eslintrc.json
 ├── .gitignore
 ├── jest.config.js
 ├── LICENSE
@@ -243,7 +243,7 @@ my-package
 ├── rollup.config.js
 ├── .travis.yml
 ├── tsconfig.json
-└── tslint.json
+└── eslintrc.json
 ```
 
 ## TSX package structure
@@ -267,7 +267,7 @@ my-package
 ├── rollup.config.js
 ├── .travis.yml
 ├── tsconfig.json
-└── tslint.json
+└── .eslintrc.json
 ```
 
 ## Badge
